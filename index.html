@@ -11,6 +11,7 @@
   <meta name="apple-mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
   <meta name="apple-mobile-web-app-title" content="HydroStone" />
+  <link rel="manifest" href="./manifest.json" />
 
   <!-- Embedded SVG Favicon -->
   <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Cdefs%3E%3ClinearGradient id='g' x1='0%25' y1='0%25' x2='100%25' y2='100%25'%3E%3Cstop offset='0%25' stop-color='%2338bdf8'/%3E%3Cstop offset='100%25' stop-color='%230284c7'/%3E%3C/linearGradient%3E%3C/defs%3E%3Cpath fill='url(%23g)' d='M16 3 C16 3 6 15 6 22 A10 10 0 0 0 26 22 C26 15 16 3 16 3 Z'/%3E%3Cpath fill='%23fef08a' d='M16 14 A5 5 0 0 1 21 19 A5 5 0 0 1 16 24 A5 5 0 0 1 11 19 A5 5 0 0 1 16 14 Z' opacity='0.85'/%3E%3C/svg%3E" />
@@ -420,6 +421,27 @@
               </div>
               <span class="text-[11px] font-bold text-slate-700">Push Alert</span>
             </div>
+          </div>
+
+          <!-- Browser Notification Permission Status & Direct Test Bar -->
+          <div id="pushStatusCard" class="p-3 rounded-2xl bg-slate-50 border border-slate-200 space-y-2">
+            <div class="flex items-center justify-between">
+              <div class="flex items-center space-x-2">
+                <span id="pushStatusDot" class="w-2.5 h-2.5 rounded-full bg-amber-400"></span>
+                <span id="pushStatusTitle" class="text-xs font-bold text-slate-800">Browser Push: Checking...</span>
+              </div>
+              <button onclick="openPushHelpModal()" type="button" class="text-[11px] font-semibold text-brand-600 hover:underline flex items-center space-x-0.5">
+                <span>Fix Guide</span>
+                <span>❓</span>
+              </button>
+            </div>
+            <p id="pushStatusDesc" class="text-[11px] text-slate-500 leading-relaxed">
+              Tap the button below to test or request push notifications on your phone/browser.
+            </p>
+            <button onclick="testPushNotificationDirect()" type="button" class="w-full py-2 px-3 bg-brand-50 hover:bg-brand-100 text-brand-700 font-bold text-xs rounded-xl border border-brand-200 transition-all flex items-center justify-center space-x-1.5 active:scale-98">
+              <span>📲</span>
+              <span>Send Test Push Notification Now</span>
+            </button>
           </div>
 
           <!-- Alert Sound Picker & Volume Controls -->
@@ -1095,6 +1117,75 @@
     </div>
 
 
+    <!-- 5. Browser Push Notification Troubleshooting Modal -->
+    <div id="pushHelpModal" class="fixed inset-0 z-50 hidden bg-slate-900/60 backdrop-blur-sm flex items-center justify-center p-4">
+      <div class="w-full max-w-sm rounded-3xl bg-white p-5 shadow-2xl border border-slate-100 max-h-[90vh] overflow-y-auto">
+        <div class="flex items-center justify-between pb-3 border-b border-slate-100">
+          <div class="flex items-center space-x-2">
+            <span class="text-xl">📲</span>
+            <h3 class="text-sm font-bold text-slate-900">Push Notification Fix Guide</h3>
+          </div>
+          <button onclick="closePushHelpModal()" class="text-slate-400 hover:text-slate-600 text-lg">✕</button>
+        </div>
+
+        <div class="space-y-3.5 pt-3 text-xs text-slate-700">
+          <div class="p-3 rounded-2xl bg-amber-50 border border-amber-200/70 text-[11px] text-amber-900 leading-relaxed">
+            <strong>Why it's blocked:</strong> When browsers or phones show "Blocked" or don't trigger alerts, permissions need a one-time toggle in your browser or phone settings.
+          </div>
+
+          <!-- Chrome on Android -->
+          <div class="rounded-2xl border border-slate-200 p-3 bg-slate-50 space-y-1.5">
+            <div class="font-bold text-slate-900 flex items-center space-x-1.5">
+              <span>🤖</span>
+              <span>Android (Chrome)</span>
+            </div>
+            <ol class="list-decimal list-inside space-y-1 text-[11px] text-slate-600 leading-relaxed">
+              <li>Look at the top URL address bar next to <code class="text-brand-700 font-mono">drdipali.github.io</code>.</li>
+              <li>Tap the <strong>Tune / Sliders 🎛️</strong> or <strong>Lock 🔒</strong> icon.</li>
+              <li>Tap <strong>Permissions</strong> &rarr; <strong>Notifications</strong>.</li>
+              <li>Switch it to <strong>Allow</strong>.</li>
+              <li>Refresh the page and tap <strong>"Send Test Push"</strong>!</li>
+            </ol>
+          </div>
+
+          <!-- iPhone (iOS Safari) -->
+          <div class="rounded-2xl border border-slate-200 p-3 bg-slate-50 space-y-1.5">
+            <div class="font-bold text-slate-900 flex items-center space-x-1.5">
+              <span>🍏</span>
+              <span>iPhone / iPad (iOS Safari)</span>
+            </div>
+            <p class="text-[11px] text-slate-600 leading-relaxed">
+              Apple strictly requires adding HydroStone to your Home Screen to enable web push:
+            </p>
+            <ol class="list-decimal list-inside space-y-1 text-[11px] text-slate-600 leading-relaxed">
+              <li>Tap Safari's <strong>Share icon ⬆️</strong> at the bottom.</li>
+              <li>Select <strong>"Add to Home Screen"</strong> &rarr; tap <strong>Add</strong>.</li>
+              <li>Open <strong>HydroStone</strong> from your home screen.</li>
+              <li>Go to Reminders and turn <strong>Push Alert ON</strong>.</li>
+            </ol>
+          </div>
+
+          <!-- Desktop (Chrome, Edge, Mac) -->
+          <div class="rounded-2xl border border-slate-200 p-3 bg-slate-50 space-y-1.5">
+            <div class="font-bold text-slate-900 flex items-center space-x-1.5">
+              <span>💻</span>
+              <span>Computer (Chrome, Edge, Mac)</span>
+            </div>
+            <ol class="list-decimal list-inside space-y-1 text-[11px] text-slate-600 leading-relaxed">
+              <li>Click the <strong>Lock 🔒</strong> or <strong>Tune 🎛️</strong> icon on the left side of the address bar.</li>
+              <li>Set <strong>Notifications</strong> to <strong>Allow</strong>.</li>
+              <li>Make sure Windows <strong>"Focus Assist / Do Not Disturb"</strong> or macOS <strong>"Focus"</strong> is not muting banners.</li>
+            </ol>
+          </div>
+
+          <button onclick="closePushHelpModal()" class="w-full py-2.5 bg-slate-900 hover:bg-slate-800 text-white rounded-xl text-xs font-bold transition-all shadow-sm">
+            Got it, I'll update my settings
+          </button>
+        </div>
+      </div>
+    </div>
+
+
     <!-- Toast Notification Floater -->
     <div id="toastNotification" class="fixed top-4 left-1/2 -translate-x-1/2 z-50 pointer-events-none transition-all duration-300 transform -translate-y-12 opacity-0 flex items-center space-x-2 px-4 py-2.5 rounded-2xl bg-slate-900 text-white text-xs font-semibold shadow-xl border border-slate-700">
       <span id="toastIcon">💧</span>
@@ -1162,6 +1253,7 @@
        Initialization
     ---------------------------------------------------- */
     document.addEventListener('DOMContentLoaded', () => {
+      initServiceWorker();
       checkDateRollover();
       initUI();
       renderAll();
@@ -1248,6 +1340,7 @@
       document.getElementById('alertVolumeSlider').value = appState.alertVolume ?? 85;
       updateVolumeUI(appState.alertVolume ?? 85);
       updateSoundPickerUI();
+      updatePushStatusUI();
       document.getElementById('customAlertMessageInput').value = appState.customAlertMessage || 'Time to drink water. Please have {amount} ml now.';
 
       // Settings Inputs
@@ -1354,25 +1447,43 @@
       // Browser Push Toggle
       document.getElementById('browserPushToggle').addEventListener('change', async (e) => {
         if (e.target.checked) {
-          if ('Notification' in window) {
-            const permission = await Notification.requestPermission();
-            if (permission === 'granted') {
-              appState.pushNotificationsEnabled = true;
-              showToast('Push notifications enabled!', '📲');
-            } else {
-              appState.pushNotificationsEnabled = false;
-              e.target.checked = false;
-              showToast('Permission not granted in browser', '⚠️');
-            }
+          if (!('Notification' in window)) {
+            e.target.checked = false;
+            openPushHelpModal();
+            return;
+          }
+
+          if (Notification.permission === 'denied') {
+            e.target.checked = false;
+            openPushHelpModal();
+            return;
+          }
+
+          const perm = await requestNotificationPermission();
+          updatePushStatusUI();
+
+          if (perm === 'granted') {
+            appState.pushNotificationsEnabled = true;
+            saveState();
+            showToast('Push notifications enabled!', '📲');
+            // Send welcoming verification notification
+            sendSystemNotification(
+              '💧 HydroStone Push Alerts Active',
+              'You will now receive scheduled hydration alerts directly on this device.',
+              { tag: 'hydrostone-welcome' }
+            );
           } else {
             appState.pushNotificationsEnabled = false;
             e.target.checked = false;
-            showToast('Browser does not support notifications', '⚠️');
+            saveState();
+            openPushHelpModal();
           }
         } else {
           appState.pushNotificationsEnabled = false;
+          saveState();
+          updatePushStatusUI();
+          showToast('Push alerts turned off', 'ℹ️');
         }
-        saveState();
       });
 
       // Custom Log Beverage Modal
@@ -1976,6 +2087,226 @@
     }
 
     /* ----------------------------------------------------
+       Browser Push & Service Worker Notification Engine
+    ---------------------------------------------------- */
+    let swRegistration = null;
+
+    function initServiceWorker() {
+      if ('serviceWorker' in navigator) {
+        navigator.serviceWorker.register('./sw.js')
+          .then((reg) => {
+            swRegistration = reg;
+            console.log('HydroStone Service Worker registered:', reg.scope);
+          })
+          .catch((err) => {
+            console.warn('Service Worker registration note:', err);
+          });
+      }
+    }
+
+    function getAppNotificationIcon() {
+      try {
+        const canvas = document.createElement('canvas');
+        canvas.width = 192;
+        canvas.height = 192;
+        const ctx = canvas.getContext('2d');
+        if (!ctx) return 'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"%3E%3Cpath fill="%230284c7" d="M12 2.69l5.66 5.66a8 8 0 1 1-11.31 0z"/%3E%3C/svg%3E';
+        
+        const grad = ctx.createLinearGradient(0, 0, 192, 192);
+        grad.addColorStop(0, '#38bdf8');
+        grad.addColorStop(1, '#0284c7');
+        ctx.fillStyle = grad;
+        
+        if (ctx.roundRect) {
+          ctx.beginPath();
+          ctx.roundRect(0, 0, 192, 192, 36);
+          ctx.fill();
+        } else {
+          ctx.fillRect(0, 0, 192, 192);
+        }
+        
+        ctx.font = '100px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'middle';
+        ctx.fillText('💧', 96, 102);
+
+        return canvas.toDataURL('image/png');
+      } catch (e) {
+        return 'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"%3E%3Cpath fill="%230284c7" d="M12 2.69l5.66 5.66a8 8 0 1 1-11.31 0z"/%3E%3C/svg%3E';
+      }
+    }
+
+    async function requestNotificationPermission() {
+      if (!('Notification' in window)) {
+        return 'unsupported';
+      }
+      try {
+        if (Notification.requestPermission.length === 0) {
+          return await Notification.requestPermission();
+        } else {
+          return await new Promise((resolve) => {
+            Notification.requestPermission((p) => resolve(p));
+          });
+        }
+      } catch (err) {
+        console.warn('Notification permission error:', err);
+        return Notification.permission;
+      }
+    }
+
+    async function sendSystemNotification(title, body, options = {}) {
+      if (!('Notification' in window)) {
+        return { success: false, reason: 'unsupported' };
+      }
+
+      if (Notification.permission !== 'granted') {
+        return { success: false, reason: Notification.permission };
+      }
+
+      const iconUrl = getAppNotificationIcon();
+      const notifOptions = {
+        body: body,
+        icon: iconUrl,
+        badge: iconUrl,
+        tag: options.tag || 'hydrostone-push-' + Date.now(),
+        renotify: true,
+        vibrate: [250, 100, 250, 100, 250],
+        requireInteraction: false,
+        ...options
+      };
+
+      // Method 1: Service Worker showNotification (Mandatory for Android Chrome & iOS PWA!)
+      if ('serviceWorker' in navigator) {
+        try {
+          let reg = swRegistration;
+          if (!reg) {
+            reg = await navigator.serviceWorker.getRegistration();
+          }
+          if (reg && typeof reg.showNotification === 'function') {
+            await reg.showNotification(title, notifOptions);
+            return { success: true, method: 'serviceworker' };
+          }
+        } catch (swErr) {
+          console.warn('SW notification failed, trying window fallback:', swErr);
+        }
+      }
+
+      // Method 2: window.Notification (Desktop Chrome, Firefox, Edge, Safari)
+      try {
+        const notif = new Notification(title, notifOptions);
+        notif.onclick = () => {
+          window.focus();
+          notif.close();
+        };
+        return { success: true, method: 'window' };
+      } catch (winErr) {
+        console.warn('window.Notification failed:', winErr);
+        return { success: false, reason: winErr.message };
+      }
+    }
+
+    function updatePushStatusUI() {
+      const statusDot = document.getElementById('pushStatusDot');
+      const statusTitle = document.getElementById('pushStatusTitle');
+      const statusDesc = document.getElementById('pushStatusDesc');
+      const pushToggle = document.getElementById('browserPushToggle');
+
+      if (!('Notification' in window)) {
+        if (statusDot) statusDot.className = 'w-2.5 h-2.5 rounded-full bg-slate-400';
+        if (statusTitle) statusTitle.textContent = 'Push Alert: Not supported in this browser mode';
+        if (statusDesc) statusDesc.textContent = 'On iPhone, tap Share ⬆️ and "Add to Home Screen" to enable native web push alerts.';
+        if (pushToggle) {
+          pushToggle.checked = false;
+          pushToggle.disabled = true;
+        }
+        return;
+      }
+
+      const perm = Notification.permission;
+      if (perm === 'granted') {
+        if (statusDot) statusDot.className = 'w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse';
+        if (statusTitle) statusTitle.textContent = 'Browser Push: Allowed & Ready 🟢';
+        if (statusDesc) statusDesc.textContent = 'System notifications are active and will pop up on your lock screen and notification shade.';
+        if (pushToggle) {
+          pushToggle.disabled = false;
+          pushToggle.checked = appState.pushNotificationsEnabled;
+        }
+      } else if (perm === 'denied') {
+        if (statusDot) statusDot.className = 'w-2.5 h-2.5 rounded-full bg-rose-500';
+        if (statusTitle) statusTitle.textContent = 'Browser Push: Blocked in Browser 🔴';
+        if (statusDesc) statusDesc.textContent = 'Notifications were blocked in your browser settings. Tap "Fix Guide" to unblock in 10 seconds.';
+        if (pushToggle) {
+          pushToggle.checked = false;
+          pushToggle.disabled = false;
+        }
+        appState.pushNotificationsEnabled = false;
+        saveState();
+      } else {
+        // 'default'
+        if (statusDot) statusDot.className = 'w-2.5 h-2.5 rounded-full bg-amber-400';
+        if (statusTitle) statusTitle.textContent = 'Browser Push: Permission Needed 🟡';
+        if (statusDesc) statusDesc.textContent = 'Tap "Send Test Push Notification Now" or toggle Push Alert ON to grant permission.';
+        if (pushToggle) {
+          pushToggle.checked = false;
+          pushToggle.disabled = false;
+        }
+      }
+    }
+
+    function openPushHelpModal() {
+      const modal = document.getElementById('pushHelpModal');
+      if (modal) modal.classList.remove('hidden');
+    }
+
+    function closePushHelpModal() {
+      const modal = document.getElementById('pushHelpModal');
+      if (modal) modal.classList.add('hidden');
+    }
+
+    async function testPushNotificationDirect() {
+      if (!('Notification' in window)) {
+        openPushHelpModal();
+        return;
+      }
+
+      if (Notification.permission === 'denied') {
+        openPushHelpModal();
+        return;
+      }
+
+      if (Notification.permission !== 'granted') {
+        const perm = await requestNotificationPermission();
+        updatePushStatusUI();
+        if (perm !== 'granted') {
+          openPushHelpModal();
+          return;
+        }
+      }
+
+      appState.pushNotificationsEnabled = true;
+      document.getElementById('browserPushToggle').checked = true;
+      saveState();
+      updatePushStatusUI();
+
+      if (appState.audioChimeEnabled) {
+        playAlertSound();
+      }
+
+      const result = await sendSystemNotification(
+        '💧 HydroStone Push Test',
+        'Success! Browser push notifications are working on your device. Time to stay dilute!',
+        { tag: 'hydrostone-test-' + Date.now() }
+      );
+
+      if (result.success) {
+        showToast('📲 Push notification sent! Check your notification tray', '✅');
+      } else {
+        showToast(`Push alert failed: ${result.reason}`, '⚠️');
+        openPushHelpModal();
+      }
+    }
+
+    /* ----------------------------------------------------
        In-App Popup Modal & Sound Chime Engine
     ---------------------------------------------------- */
     function triggerReminderAlert(reminder) {
@@ -1997,16 +2328,13 @@
       // 2. Speak custom voice reminder out loud
       speakVoiceAlert(formattedMsg);
 
-      // 3. Browser Push Notification (if granted)
-      if (appState.pushNotificationsEnabled && 'Notification' in window && Notification.permission === 'granted') {
-        try {
-          new Notification('HydroStone Hydration Reminder', {
-            body: formattedMsg,
-            icon: 'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"%3E%3Cpath fill="%230284c7" d="M12 2.69l5.66 5.66a8 8 0 1 1-11.31 0z"/%3E%3C/svg%3E'
-          });
-        } catch (e) {
-          console.warn('Push error:', e);
-        }
+      // 3. Browser Push Notification (via Service Worker or window.Notification)
+      if (appState.pushNotificationsEnabled) {
+        sendSystemNotification(
+          'HydroStone Hydration Reminder',
+          formattedMsg,
+          { tag: 'hydrostone-rem-' + reminder.id }
+        );
       }
     }
 
