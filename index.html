@@ -1,13 +1,2066 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" class="h-full bg-slate-100">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-  <title>HydroStone — Kidney Stone Hydration & Smart Reminders</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
+  <title>HydroStone — Kidney Stone Hydration & Clinical Dilution Tracker</title>
+  
+  <!-- SEO & Web App Meta -->
+  <meta name="description" content="A mobile-first clinical hydration tracker and smart reminder app designed specifically for kidney stone prevention and optimal urine dilution." />
+  <meta name="theme-color" content="#0284c7" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <meta name="apple-mobile-web-app-title" content="HydroStone" />
+
+  <!-- Embedded SVG Favicon -->
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Cdefs%3E%3ClinearGradient id='g' x1='0%25' y1='0%25' x2='100%25' y2='100%25'%3E%3Cstop offset='0%25' stop-color='%2338bdf8'/%3E%3Cstop offset='100%25' stop-color='%230284c7'/%3E%3C/linearGradient%3E%3C/defs%3E%3Cpath fill='url(%23g)' d='M16 3 C16 3 6 15 6 22 A10 10 0 0 0 26 22 C26 15 16 3 16 3 Z'/%3E%3Cpath fill='%23fef08a' d='M16 14 A5 5 0 0 1 21 19 A5 5 0 0 1 16 24 A5 5 0 0 1 11 19 A5 5 0 0 1 16 14 Z' opacity='0.85'/%3E%3C/svg%3E" />
+
   <!-- Tailwind CSS via CDN -->
   <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Inter', '-apple-system', 'BlinkMacSystemFont', 'Segoe UI', 'Roboto', 'sans-serif'],
+          },
+          colors: {
+            brand: {
+              50: '#f0f9ff',
+              100: '#e0f2fe',
+              200: '#bae6fd',
+              300: '#7dd3fc',
+              400: '#38bdf8',
+              500: '#0ea5e9',
+              600: '#0284c7',
+              700: '#0369a1',
+              800: '#075985',
+              900: '#0c4a6e',
+            },
+            citrate: {
+              50: '#fefce8',
+              100: '#fef9c3',
+              200: '#fef08a',
+              300: '#fde047',
+              400: '#facc15',
+              500: '#eab308',
+              600: '#ca8a04',
+            }
+          },
+          animation: {
+            'pulse-subtle': 'pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+            'bounce-gentle': 'bounce 2s infinite',
+          }
+        }
+      }
+    };
+  </script>
+
   <!-- Google Fonts: Inter -->
   <link rel="preconnect" href="https://fonts.googleapis.com" />
-…  </script>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
+
+  <style>
+    /* Custom Utilities & iOS Safe Area Support */
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      -webkit-tap-highlight-color: transparent;
+    }
+    .pb-safe {
+      padding-bottom: env(safe-area-inset-bottom, 1rem);
+    }
+    .pt-safe {
+      padding-top: env(safe-area-inset-top, 1rem);
+    }
+    /* Circular Progress Transition */
+    .progress-circle {
+      transition: stroke-dashoffset 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    /* Hide scrollbar for clean horizontal cards */
+    .no-scrollbar::-webkit-scrollbar {
+      display: none;
+    }
+    .no-scrollbar {
+      -ms-overflow-style: none;
+      scrollbar-width: none;
+    }
+  </style>
+</head>
+<body class="h-full text-slate-800 antialiased selection:bg-brand-200">
+
+  <!-- Mobile-First Container Shell -->
+  <div class="mx-auto flex min-h-screen max-w-md flex-col bg-slate-50 shadow-2xl relative border-x border-slate-200/80">
+
+    <!-- Top App Bar / Header -->
+    <header class="sticky top-0 z-30 bg-white/95 backdrop-blur-md border-b border-slate-200/80 px-4 py-3 transition-shadow">
+      <div class="flex items-center justify-between">
+        <div class="flex items-center space-x-2.5">
+          <div class="h-10 w-10 rounded-2xl bg-gradient-to-tr from-brand-600 to-cyan-400 p-0.5 shadow-md shadow-brand-500/20 flex items-center justify-center text-white">
+            <svg class="w-6 h-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M12 2.69l5.66 5.66a8 8 0 1 1-11.31 0z" fill="currentColor" fill-opacity="0.25"/>
+              <path d="M12 2.69l5.66 5.66a8 8 0 1 1-11.31 0z"/>
+              <path d="M12 12v4" stroke="#fef08a" stroke-width="2.5"/>
+              <path d="M10 14h4" stroke="#fef08a" stroke-width="2.5"/>
+            </svg>
+          </div>
+          <div>
+            <div class="flex items-center space-x-1.5">
+              <h1 class="text-lg font-black tracking-tight text-slate-900">Hydro<span class="text-brand-600">Stone</span></h1>
+              <span class="inline-flex items-center px-1.5 py-0.5 rounded text-[10px] font-bold bg-brand-50 text-brand-700 border border-brand-200">Rx Hydration</span>
+            </div>
+            <p class="text-[11px] font-medium text-slate-500" id="currentDateDisplay">Loading date...</p>
+          </div>
+        </div>
+
+        <!-- Quick Status & Streak Pill -->
+        <div class="flex items-center space-x-1.5">
+          <div id="streakPill" class="flex items-center space-x-1 bg-amber-50 text-amber-800 border border-amber-200/80 px-2.5 py-1 rounded-full text-xs font-semibold shadow-xs" title="Consecutive days goal achieved">
+            <span class="text-sm">🔥</span>
+            <span id="streakCount">0d</span>
+          </div>
+          <button id="quickTestChimeBtn" class="p-2 text-slate-400 hover:text-brand-600 hover:bg-brand-50 rounded-full transition-colors" title="Test Audio Chime">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.536 8.464a5 5 0 010 7.072M18.364 5.636a9 9 0 010 12.728M11 5L6 9H2v6h4l5 4V5z"/>
+            </svg>
+          </button>
+        </div>
+      </div>
+
+      <!-- Clinical Status Bar / Pace Alert -->
+      <div id="clinicalStatusBanner" class="mt-2.5 flex items-center justify-between rounded-xl px-3 py-1.5 text-xs font-medium bg-emerald-50 text-emerald-800 border border-emerald-200 transition-all">
+        <div class="flex items-center space-x-2">
+          <span class="relative flex h-2 w-2">
+            <span id="statusPulse" class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+            <span id="statusDot" class="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
+          </span>
+          <span id="statusText">Pacing well: Urine dilution maintained</span>
+        </div>
+        <span id="timeNowText" class="text-[11px] text-emerald-700/80 font-mono">12:00</span>
+      </div>
+    </header>
+
+    <!-- Main Dynamic Tab Content Area -->
+    <main class="flex-1 px-4 py-4 space-y-5 overflow-y-auto">
+
+      <!-- ========================================== -->
+      <!-- TAB 1: TODAY DASHBOARD                     -->
+      <!-- ========================================== -->
+      <section id="tab-today" class="tab-content space-y-4">
+
+        <!-- 1. Primary Intake Circular Progress Card -->
+        <div class="relative overflow-hidden rounded-3xl bg-white p-5 shadow-sm border border-slate-200/80 text-center">
+          <div class="absolute -right-8 -top-8 w-32 h-32 bg-brand-100 rounded-full blur-2xl opacity-60 pointer-events-none"></div>
+          <div class="absolute -left-8 -bottom-8 w-32 h-32 bg-cyan-100 rounded-full blur-2xl opacity-60 pointer-events-none"></div>
+
+          <!-- Circular SVG Progress -->
+          <div class="relative mx-auto flex items-center justify-center my-1" style="width: 220px; height: 220px;">
+            <svg class="w-full h-full transform -rotate-90" viewBox="0 0 200 200">
+              <defs>
+                <linearGradient id="waterGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                  <stop offset="0%" stop-color="#38bdf8" />
+                  <stop offset="50%" stop-color="#0ea5e9" />
+                  <stop offset="100%" stop-color="#0284c7" />
+                </linearGradient>
+                <linearGradient id="bgGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                  <stop offset="0%" stop-color="#e2e8f0" />
+                  <stop offset="100%" stop-color="#f1f5f9" />
+                </linearGradient>
+              </defs>
+              <!-- Background Circle Track -->
+              <circle cx="100" cy="100" r="82" stroke="url(#bgGradient)" stroke-width="15" fill="none" class="opacity-90"/>
+              <!-- Animated Progress Circle -->
+              <circle id="intakeProgressCircle" cx="100" cy="100" r="82" stroke="url(#waterGradient)" stroke-width="15" fill="none" stroke-linecap="round" stroke-dasharray="515.22" stroke-dashoffset="515.22" class="progress-circle"/>
+            </svg>
+
+            <!-- Inner Metrics Display -->
+            <div class="absolute inset-0 flex flex-col items-center justify-center pointer-events-none">
+              <span class="text-xs uppercase tracking-wider font-semibold text-slate-400">Total Fluid</span>
+              <div class="flex items-baseline space-x-0.5">
+                <span id="currentIntakeVal" class="text-4xl font-extrabold tracking-tight text-slate-900">0</span>
+                <span class="text-sm font-bold text-slate-500">ml</span>
+              </div>
+              <div class="mt-0.5 text-xs font-medium text-slate-500">
+                Goal: <span id="targetGoalVal" class="font-bold text-slate-800">3,000</span> ml
+              </div>
+              <div class="mt-1">
+                <span id="percentBadge" class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-bold bg-brand-50 text-brand-700 border border-brand-200">0%</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Estimated Urine Output Metric (Clinical Target >= 2.0 - 2.5 L) -->
+          <div class="mt-3 pt-3 border-t border-slate-100 flex items-center justify-between text-left px-2">
+            <div>
+              <div class="flex items-center space-x-1.5">
+                <span class="text-xs font-semibold text-slate-700">Est. 24h Urine Output</span>
+                <span class="inline-block" title="Kidney stone guidelines (AUA/EAU) recommend producing ≥ 2.0 to 2.5 Liters of dilute urine daily to prevent crystal supersaturation.">
+                  <svg class="w-3.5 h-3.5 text-slate-400 cursor-pointer" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                  </svg>
+                </span>
+              </div>
+              <p class="text-[11px] text-slate-500">Target: <strong class="text-slate-700">≥ 2.0 – 2.5 L/day</strong></p>
+            </div>
+            <div class="text-right">
+              <div class="flex items-baseline justify-end space-x-1">
+                <span id="estUrineOutputVal" class="text-lg font-bold text-slate-900 font-mono">0.0</span>
+                <span class="text-xs font-semibold text-slate-500">L</span>
+              </div>
+              <span id="urineTargetBadge" class="inline-block text-[10px] font-bold px-1.5 py-0.5 rounded bg-amber-50 text-amber-700 border border-amber-200">Below Target</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- 2. Live Next Reminder & Quick Alert Card -->
+        <div class="rounded-2xl bg-gradient-to-r from-slate-900 to-brand-950 p-4 text-white shadow-md flex items-center justify-between">
+          <div class="flex items-center space-x-3">
+            <div class="h-10 w-10 rounded-xl bg-brand-500/20 border border-brand-400/30 flex items-center justify-center text-brand-300">
+              <svg class="w-5 h-5 animate-pulse" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
+              </svg>
+            </div>
+            <div>
+              <div class="text-[11px] font-medium text-brand-300 uppercase tracking-wider">Next Fluid Reminder</div>
+              <div id="nextReminderText" class="text-sm font-bold text-white">07:00 • Morning Flush (500 ml)</div>
+              <div id="nextReminderCountdown" class="text-xs text-slate-300">Calculating schedule...</div>
+            </div>
+          </div>
+          <button id="testAlertNowBtn" class="shrink-0 ml-2 px-3 py-1.5 bg-brand-600 hover:bg-brand-500 active:scale-95 text-white rounded-xl text-xs font-bold transition-all shadow-sm flex items-center space-x-1">
+            <span>Test Alert</span>
+          </button>
+        </div>
+
+        <!-- 3. Dynamic Adjustment Toggles (Hot Day & Workout) -->
+        <div class="rounded-2xl bg-white p-4 shadow-sm border border-slate-200/80">
+          <div class="flex items-center justify-between mb-2.5">
+            <span class="text-xs font-bold uppercase tracking-wider text-slate-500">Environmental & Activity Adjustments</span>
+            <span class="text-[11px] text-slate-400">Compensate for perspiration</span>
+          </div>
+          <div class="grid grid-cols-2 gap-3">
+            <!-- Hot Day Toggle -->
+            <button id="toggleHotDayBtn" type="button" class="flex items-center justify-between p-3 rounded-xl border border-slate-200 bg-slate-50 hover:bg-amber-50/50 transition-all text-left group">
+              <div class="flex items-center space-x-2.5">
+                <div class="text-xl">☀️</div>
+                <div>
+                  <div class="text-xs font-bold text-slate-800">Hot Day</div>
+                  <div class="text-[11px] font-semibold text-amber-600">+500 ml</div>
+                </div>
+              </div>
+              <div id="hotDayCheckbox" class="w-5 h-5 rounded-md border-2 border-slate-300 flex items-center justify-center text-white bg-white group-hover:border-amber-400 transition-colors">
+                <!-- Check Icon inserted dynamically -->
+              </div>
+            </button>
+
+            <!-- Workout Toggle -->
+            <button id="toggleWorkoutBtn" type="button" class="flex items-center justify-between p-3 rounded-xl border border-slate-200 bg-slate-50 hover:bg-cyan-50/50 transition-all text-left group">
+              <div class="flex items-center space-x-2.5">
+                <div class="text-xl">🏃‍♂️</div>
+                <div>
+                  <div class="text-xs font-bold text-slate-800">Workout</div>
+                  <div class="text-[11px] font-semibold text-brand-600">+600 ml</div>
+                </div>
+              </div>
+              <div id="workoutCheckbox" class="w-5 h-5 rounded-md border-2 border-slate-300 flex items-center justify-center text-white bg-white group-hover:border-brand-400 transition-colors">
+                <!-- Check Icon inserted dynamically -->
+              </div>
+            </button>
+          </div>
+        </div>
+
+        <!-- 4. Quick-Log Buttons -->
+        <div class="space-y-2.5">
+          <div class="flex items-center justify-between">
+            <h2 class="text-xs font-bold uppercase tracking-wider text-slate-500">Quick Log Beverage</h2>
+            <button id="customLogBtn" class="text-xs font-semibold text-brand-600 hover:text-brand-700 flex items-center space-x-0.5">
+              <span>+ Custom ml</span>
+            </button>
+          </div>
+
+          <div class="grid grid-cols-2 gap-3">
+            <!-- Plain Water (+250 ml) -->
+            <button onclick="logBeverage('Plain Water', 250, 'water')" class="relative flex flex-col items-start p-3.5 rounded-2xl bg-white border border-slate-200/90 hover:border-brand-300 hover:shadow-md active:scale-98 transition-all text-left group">
+              <div class="flex items-center justify-between w-full mb-1">
+                <span class="text-2xl group-hover:scale-110 transition-transform">💧</span>
+                <span class="text-xs font-extrabold text-brand-600 bg-brand-50 px-2 py-0.5 rounded-lg border border-brand-100">+250 ml</span>
+              </div>
+              <span class="text-sm font-bold text-slate-900">Plain Water</span>
+              <span class="text-[11px] text-slate-500">Standard glass (pure dilution)</span>
+            </button>
+
+            <!-- Water Bottle (+500 ml) -->
+            <button onclick="logBeverage('Water Bottle', 500, 'bottle')" class="relative flex flex-col items-start p-3.5 rounded-2xl bg-white border border-slate-200/90 hover:border-brand-300 hover:shadow-md active:scale-98 transition-all text-left group">
+              <div class="flex items-center justify-between w-full mb-1">
+                <span class="text-2xl group-hover:scale-110 transition-transform">🍶</span>
+                <span class="text-xs font-extrabold text-cyan-600 bg-cyan-50 px-2 py-0.5 rounded-lg border border-cyan-100">+500 ml</span>
+              </div>
+              <span class="text-sm font-bold text-slate-900">Water Bottle</span>
+              <span class="text-[11px] text-slate-500">Full refill / sports tumbler</span>
+            </button>
+
+            <!-- Lemon Water / Citrate Boost (+250 ml) -->
+            <button onclick="logBeverage('Lemon Water', 250, 'citrate')" class="relative flex flex-col items-start p-3.5 rounded-2xl bg-gradient-to-b from-citrate-50/70 to-white border border-amber-200 hover:border-amber-300 hover:shadow-md active:scale-98 transition-all text-left group">
+              <div class="flex items-center justify-between w-full mb-1">
+                <span class="text-2xl group-hover:scale-110 transition-transform">🍋</span>
+                <span class="text-xs font-extrabold text-amber-700 bg-amber-100 px-2 py-0.5 rounded-lg border border-amber-200">+250 ml</span>
+              </div>
+              <div class="flex items-center space-x-1">
+                <span class="text-sm font-bold text-slate-900">Lemon Water</span>
+                <span class="inline-block w-1.5 h-1.5 rounded-full bg-amber-500"></span>
+              </div>
+              <span class="text-[11px] font-medium text-amber-700">Citrate Boost (Binds Calcium)</span>
+            </button>
+
+            <!-- Soda / Strong Tea (+200 ml with gentle tip) -->
+            <button onclick="triggerSodaWarning()" class="relative flex flex-col items-start p-3.5 rounded-2xl bg-white border border-slate-200/90 hover:border-rose-200 hover:shadow-md active:scale-98 transition-all text-left group">
+              <div class="flex items-center justify-between w-full mb-1">
+                <span class="text-2xl group-hover:scale-110 transition-transform">🥤</span>
+                <span class="text-xs font-extrabold text-slate-700 bg-slate-100 px-2 py-0.5 rounded-lg border border-slate-200">+200 ml</span>
+              </div>
+              <div class="flex items-center space-x-1">
+                <span class="text-sm font-bold text-slate-900">Soda / Strong Tea</span>
+                <span class="text-[10px] font-bold text-rose-600 bg-rose-50 px-1 rounded border border-rose-200">Tip</span>
+              </div>
+              <span class="text-[11px] text-rose-600 font-medium">Stone-risk caution</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- 5. Today's Drink Log & History -->
+        <div class="rounded-3xl bg-white p-4 shadow-sm border border-slate-200/80">
+          <div class="flex items-center justify-between mb-3">
+            <div>
+              <h3 class="text-sm font-bold text-slate-900">Today's Intake Log</h3>
+              <p class="text-[11px] text-slate-500"><span id="logItemCount">0</span> entries logged</p>
+            </div>
+            <div id="citrateCountPill" class="hidden items-center space-x-1 px-2 py-0.5 rounded-full bg-amber-50 text-amber-800 text-[11px] font-bold border border-amber-200">
+              <span>🍋</span>
+              <span id="citrateCountText">0 Citrate</span>
+            </div>
+          </div>
+
+          <!-- Entries Container -->
+          <div id="drinkLogContainer" class="space-y-2 max-h-60 overflow-y-auto pr-1">
+            <!-- Dynamically populated or empty state -->
+            <div id="emptyLogState" class="py-8 text-center text-slate-400">
+              <svg class="mx-auto w-10 h-10 text-slate-300 stroke-current mb-2" fill="none" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 6v6m0 0v6m0-6h6m-6 0H6"/>
+              </svg>
+              <p class="text-xs font-medium">No drinks logged yet today.</p>
+              <p class="text-[11px] text-slate-400">Tap any quick button above to log fluid.</p>
+            </div>
+          </div>
+        </div>
+
+      </section>
+
+
+      <!-- ========================================== -->
+      <!-- TAB 2: SMART REMINDERS                     -->
+      <!-- ========================================== -->
+      <section id="tab-reminders" class="tab-content hidden space-y-4">
+        
+        <!-- Controls Header Card -->
+        <div class="rounded-3xl bg-white p-5 shadow-sm border border-slate-200/80 space-y-4">
+          <div class="flex items-center justify-between">
+            <div>
+              <h2 class="text-base font-bold text-slate-900">Smart Hydration Reminders</h2>
+              <p class="text-xs text-slate-500">Evenly spaced to prevent concentrated urine</p>
+            </div>
+            
+            <!-- Master ON/OFF Switch -->
+            <label class="relative inline-flex items-center cursor-pointer">
+              <input type="checkbox" id="masterReminderToggle" class="sr-only peer" checked>
+              <div class="w-12 h-6 bg-slate-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-brand-600"></div>
+            </label>
+          </div>
+
+          <!-- Audio & Push Toggles -->
+          <div class="grid grid-cols-2 gap-2.5 pt-2 border-t border-slate-100">
+            <!-- Web Audio API Chime -->
+            <div class="flex items-center justify-between p-2.5 rounded-xl bg-slate-50 border border-slate-200/70">
+              <div class="flex items-center space-x-2">
+                <span class="text-base">🔔</span>
+                <span class="text-xs font-semibold text-slate-700">Audio Chime</span>
+              </div>
+              <input type="checkbox" id="audioChimeToggle" class="h-4 w-4 rounded text-brand-600 focus:ring-brand-500 border-slate-300" checked>
+            </div>
+
+            <!-- Browser Push Notification -->
+            <div class="flex items-center justify-between p-2.5 rounded-xl bg-slate-50 border border-slate-200/70">
+              <div class="flex items-center space-x-2">
+                <span class="text-base">📲</span>
+                <span class="text-xs font-semibold text-slate-700">Push Alert</span>
+              </div>
+              <input type="checkbox" id="browserPushToggle" class="h-4 w-4 rounded text-brand-600 focus:ring-brand-500 border-slate-300">
+            </div>
+          </div>
+
+          <!-- Test Reminder Button -->
+          <button id="testReminderNowDirectBtn" class="w-full py-2.5 bg-slate-900 hover:bg-slate-800 text-white rounded-xl text-xs font-bold transition-all flex items-center justify-center space-x-2 active:scale-98 shadow-sm">
+            <svg class="w-4 h-4 text-brand-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"/>
+            </svg>
+            <span>Test Reminder Popup Now</span>
+          </button>
+        </div>
+
+        <!-- Quick Schedule Generator -->
+        <div class="rounded-2xl bg-white p-4 shadow-sm border border-slate-200/80">
+          <div class="text-xs font-bold uppercase tracking-wider text-slate-500 mb-2.5">Auto Schedule Generator</div>
+          <p class="text-[11px] text-slate-500 mb-3">Re-populate spaced hydration slots between wake (07:00) and bed (21:00):</p>
+          <div class="grid grid-cols-3 gap-2">
+            <button onclick="generateSchedule(120)" class="px-2 py-2 text-center rounded-xl bg-slate-100 hover:bg-brand-50 hover:text-brand-700 hover:border-brand-200 border border-slate-200 text-xs font-bold text-slate-700 transition-all active:scale-95">
+              Every 2 hrs
+              <span class="block text-[10px] font-normal text-slate-500">8 slots</span>
+            </button>
+            <button onclick="generateSchedule(90)" class="px-2 py-2 text-center rounded-xl bg-slate-100 hover:bg-brand-50 hover:text-brand-700 hover:border-brand-200 border border-slate-200 text-xs font-bold text-slate-700 transition-all active:scale-95">
+              Every 90 min
+              <span class="block text-[10px] font-normal text-slate-500">10 slots</span>
+            </button>
+            <button onclick="generateSchedule(60)" class="px-2 py-2 text-center rounded-xl bg-slate-100 hover:bg-brand-50 hover:text-brand-700 hover:border-brand-200 border border-slate-200 text-xs font-bold text-slate-700 transition-all active:scale-95">
+              Every 1 hr
+              <span class="block text-[10px] font-normal text-slate-500">14 slots</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- Add Custom Reminder Form -->
+        <div class="rounded-2xl bg-white p-4 shadow-sm border border-slate-200/80">
+          <button id="toggleAddReminderFormBtn" class="flex items-center justify-between w-full text-left text-xs font-bold uppercase tracking-wider text-slate-700">
+            <span class="flex items-center space-x-1.5">
+              <span class="text-brand-600 text-base font-black">+</span>
+              <span>Add Custom Reminder</span>
+            </span>
+            <span id="addReminderFormChevron" class="text-slate-400">▼</span>
+          </button>
+
+          <form id="addReminderForm" class="hidden mt-3 pt-3 border-t border-slate-100 space-y-3">
+            <div class="grid grid-cols-2 gap-2">
+              <div>
+                <label class="block text-[11px] font-semibold text-slate-600 mb-1">Time (24h)</label>
+                <input type="time" id="newReminderTime" required class="w-full px-3 py-2 text-xs rounded-xl border border-slate-300 focus:outline-none focus:ring-2 focus:ring-brand-500 font-mono">
+              </div>
+              <div>
+                <label class="block text-[11px] font-semibold text-slate-600 mb-1">Target Volume</label>
+                <div class="relative">
+                  <input type="number" id="newReminderAmount" min="50" max="1500" step="50" value="300" required class="w-full px-3 py-2 text-xs rounded-xl border border-slate-300 focus:outline-none focus:ring-2 focus:ring-brand-500">
+                  <span class="absolute right-3 top-2 text-xs text-slate-400">ml</span>
+                </div>
+              </div>
+            </div>
+            <div>
+              <label class="block text-[11px] font-semibold text-slate-600 mb-1">Label / Clinical Note</label>
+              <input type="text" id="newReminderLabel" placeholder="e.g. Afternoon Citrate Sip" required class="w-full px-3 py-2 text-xs rounded-xl border border-slate-300 focus:outline-none focus:ring-2 focus:ring-brand-500">
+            </div>
+            <button type="submit" class="w-full py-2 bg-brand-600 hover:bg-brand-700 text-white rounded-xl text-xs font-bold transition-all shadow-sm">
+              Add to Schedule
+            </button>
+          </form>
+        </div>
+
+        <!-- Reminders List -->
+        <div class="space-y-2">
+          <div class="flex items-center justify-between px-1">
+            <h3 class="text-xs font-bold uppercase tracking-wider text-slate-500">Daily Reminder Timeline</h3>
+            <span id="activeRemindersCountBadge" class="text-[11px] font-semibold text-brand-700 bg-brand-50 px-2 py-0.5 rounded-full border border-brand-200">8 Scheduled</span>
+          </div>
+
+          <div id="remindersListContainer" class="space-y-2.5">
+            <!-- Dynamically populated reminders -->
+          </div>
+        </div>
+
+      </section>
+
+
+      <!-- ========================================== -->
+      <!-- TAB 3: URINE COLOR CHECK                   -->
+      <!-- ========================================== -->
+      <section id="tab-urine" class="tab-content hidden space-y-4">
+        
+        <!-- Header Clinical Guidance Card -->
+        <div class="rounded-3xl bg-white p-5 shadow-sm border border-slate-200/80">
+          <div class="flex items-start space-x-3">
+            <div class="h-10 w-10 rounded-2xl bg-amber-100 flex items-center justify-center text-amber-700 shrink-0 text-xl">
+              🧪
+            </div>
+            <div>
+              <h2 class="text-base font-bold text-slate-900">Urine Dilution Scale</h2>
+              <p class="text-xs text-slate-500 mt-0.5">Clinical color chart (Armstrong Hydration Scale). For stone prevention, target <strong class="text-slate-800">Levels 1 or 2</strong>.</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- 5-Level Interactive Urine Color Scale -->
+        <div class="rounded-3xl bg-white p-4 shadow-sm border border-slate-200/80 space-y-3">
+          <div class="text-xs font-bold uppercase tracking-wider text-slate-500 mb-1">Tap Your Current Color</div>
+
+          <div class="space-y-2" id="urineScaleButtons">
+            <!-- Level 1: Clear / Very Pale Straw -->
+            <button onclick="selectUrineLevel(1)" data-level="1" class="urine-card w-full flex items-center justify-between p-3 rounded-2xl border-2 border-slate-200 hover:border-brand-400 bg-white transition-all text-left group">
+              <div class="flex items-center space-x-3">
+                <div class="w-8 h-12 rounded-lg border border-slate-300 shadow-inner flex items-center justify-center font-bold text-xs" style="background-color: #f8fafc; border-color: #cbd5e1;">
+                  💧
+                </div>
+                <div>
+                  <div class="flex items-center space-x-1.5">
+                    <span class="text-xs font-bold text-slate-900">Level 1: Clear / Very Pale Straw</span>
+                    <span class="px-1.5 py-0.2 rounded text-[10px] font-bold bg-emerald-100 text-emerald-800">Ideal</span>
+                  </div>
+                  <p class="text-[11px] text-slate-500">Optimal dilution • Crystals cannot precipitate easily</p>
+                </div>
+              </div>
+              <span class="text-slate-300 group-hover:text-brand-500">➔</span>
+            </button>
+
+            <!-- Level 2: Pale Yellow -->
+            <button onclick="selectUrineLevel(2)" data-level="2" class="urine-card w-full flex items-center justify-between p-3 rounded-2xl border-2 border-slate-200 hover:border-brand-400 bg-white transition-all text-left group">
+              <div class="flex items-center space-x-3">
+                <div class="w-8 h-12 rounded-lg border border-amber-200 shadow-inner" style="background-color: #fef08a;"></div>
+                <div>
+                  <div class="flex items-center space-x-1.5">
+                    <span class="text-xs font-bold text-slate-900">Level 2: Pale Yellow</span>
+                    <span class="px-1.5 py-0.2 rounded text-[10px] font-bold bg-emerald-100 text-emerald-800">Good</span>
+                  </div>
+                  <p class="text-[11px] text-slate-500">Normal safe dilution • Low stone formation risk</p>
+                </div>
+              </div>
+              <span class="text-slate-300 group-hover:text-brand-500">➔</span>
+            </button>
+
+            <!-- Level 3: Bright / Lemon Yellow -->
+            <button onclick="selectUrineLevel(3)" data-level="3" class="urine-card w-full flex items-center justify-between p-3 rounded-2xl border-2 border-slate-200 hover:border-amber-400 bg-white transition-all text-left group">
+              <div class="flex items-center space-x-3">
+                <div class="w-8 h-12 rounded-lg border border-yellow-400 shadow-inner" style="background-color: #facc15;"></div>
+                <div>
+                  <div class="flex items-center space-x-1.5">
+                    <span class="text-xs font-bold text-slate-900">Level 3: Bright / Lemon Yellow</span>
+                    <span class="px-1.5 py-0.2 rounded text-[10px] font-bold bg-amber-100 text-amber-800">Mild Risk</span>
+                  </div>
+                  <p class="text-[11px] text-slate-500">Mildly concentrated • Recommend 1 glass of water</p>
+                </div>
+              </div>
+              <span class="text-slate-300 group-hover:text-amber-500">➔</span>
+            </button>
+
+            <!-- Level 4: Dark Yellow / Amber -->
+            <button onclick="selectUrineLevel(4)" data-level="4" class="urine-card w-full flex items-center justify-between p-3 rounded-2xl border-2 border-slate-200 hover:border-orange-400 bg-white transition-all text-left group">
+              <div class="flex items-center space-x-3">
+                <div class="w-8 h-12 rounded-lg border border-amber-600 shadow-inner" style="background-color: #d97706;"></div>
+                <div>
+                  <div class="flex items-center space-x-1.5">
+                    <span class="text-xs font-bold text-slate-900">Level 4: Dark Yellow / Amber</span>
+                    <span class="px-1.5 py-0.2 rounded text-[10px] font-bold bg-orange-100 text-orange-800">High Risk</span>
+                  </div>
+                  <p class="text-[11px] text-slate-500">Moderately concentrated • Calcium crystallization risk</p>
+                </div>
+              </div>
+              <span class="text-slate-300 group-hover:text-orange-500">➔</span>
+            </button>
+
+            <!-- Level 5: Honey / Brownish Amber -->
+            <button onclick="selectUrineLevel(5)" data-level="5" class="urine-card w-full flex items-center justify-between p-3 rounded-2xl border-2 border-slate-200 hover:border-rose-400 bg-white transition-all text-left group">
+              <div class="flex items-center space-x-3">
+                <div class="w-8 h-12 rounded-lg border border-amber-900 shadow-inner" style="background-color: #78350f;"></div>
+                <div>
+                  <div class="flex items-center space-x-1.5">
+                    <span class="text-xs font-bold text-slate-900">Level 5: Honey / Brown Amber</span>
+                    <span class="px-1.5 py-0.2 rounded text-[10px] font-bold bg-rose-100 text-rose-800">Severe Risk</span>
+                  </div>
+                  <p class="text-[11px] text-slate-500">Deep supersaturation • Immediate flush needed</p>
+                </div>
+              </div>
+              <span class="text-slate-300 group-hover:text-rose-500">➔</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- Selected Feedback & 1-Tap Catch-up Container -->
+        <div id="urineFeedbackContainer" class="hidden rounded-3xl p-5 shadow-sm border transition-all space-y-4">
+          <!-- Filled dynamically by JavaScript -->
+        </div>
+
+        <!-- Today's Urine Check History -->
+        <div class="rounded-3xl bg-white p-4 shadow-sm border border-slate-200/80 space-y-3">
+          <div class="flex items-center justify-between">
+            <h3 class="text-xs font-bold uppercase tracking-wider text-slate-500">Today's Color Logs</h3>
+            <span id="urineHistoryCount" class="text-[11px] text-slate-500">0 checks</span>
+          </div>
+
+          <div id="urineCheckList" class="space-y-2">
+            <p id="emptyUrineCheckMsg" class="text-center py-6 text-xs text-slate-400">No urine checks recorded today.</p>
+          </div>
+        </div>
+
+      </section>
+
+
+      <!-- ========================================== -->
+      <!-- TAB 4: SETTINGS & PROFILE                  -->
+      <!-- ========================================== -->
+      <section id="tab-settings" class="tab-content hidden space-y-4">
+        
+        <!-- Clinical Goal Presets -->
+        <div class="rounded-3xl bg-white p-5 shadow-sm border border-slate-200/80 space-y-3">
+          <div class="flex items-center space-x-2">
+            <span class="text-lg">🎯</span>
+            <div>
+              <h2 class="text-sm font-bold text-slate-900">Clinical Hydration Targets</h2>
+              <p class="text-[11px] text-slate-500">Based on nephrology stone-prevention guidelines</p>
+            </div>
+          </div>
+
+          <div class="space-y-2 pt-2">
+            <!-- Preset 2.5 L -->
+            <label class="flex items-center justify-between p-3 rounded-2xl border border-slate-200 hover:bg-slate-50 cursor-pointer transition-colors">
+              <div class="flex items-center space-x-3">
+                <input type="radio" name="goalPreset" value="2500" onchange="updateBaseGoal(2500)" class="text-brand-600 focus:ring-brand-500">
+                <div>
+                  <div class="text-xs font-bold text-slate-900">2.5 L Standard Intake</div>
+                  <div class="text-[11px] text-slate-500">Baseline maintenance for first-time formers</div>
+                </div>
+              </div>
+              <span class="text-xs font-mono font-bold text-slate-700">2,500 ml</span>
+            </label>
+
+            <!-- Preset 3.0 L (Recommended) -->
+            <label class="flex items-center justify-between p-3 rounded-2xl border-2 border-brand-500 bg-brand-50/50 cursor-pointer transition-colors">
+              <div class="flex items-center space-x-3">
+                <input type="radio" name="goalPreset" value="3000" checked onchange="updateBaseGoal(3000)" class="text-brand-600 focus:ring-brand-500">
+                <div>
+                  <div class="flex items-center space-x-1.5">
+                    <span class="text-xs font-bold text-brand-950">3.0 L Stone Prevention</span>
+                    <span class="px-1.5 py-0.2 rounded text-[10px] font-bold bg-brand-600 text-white">Recommended</span>
+                  </div>
+                  <div class="text-[11px] text-brand-700">Clinical benchmark to yield ≥ 2.2 L urine</div>
+                </div>
+              </div>
+              <span class="text-xs font-mono font-bold text-brand-800">3,000 ml</span>
+            </label>
+
+            <!-- Preset 3.5 L -->
+            <label class="flex items-center justify-between p-3 rounded-2xl border border-slate-200 hover:bg-slate-50 cursor-pointer transition-colors">
+              <div class="flex items-center space-x-3">
+                <input type="radio" name="goalPreset" value="3500" onchange="updateBaseGoal(3500)" class="text-brand-600 focus:ring-brand-500">
+                <div>
+                  <div class="text-xs font-bold text-slate-900">3.5 L High Risk / Cystinuria</div>
+                  <div class="text-[11px] text-slate-500">For recurrent, rapid cystine or uric acid stones</div>
+                </div>
+              </div>
+              <span class="text-xs font-mono font-bold text-slate-700">3,500 ml</span>
+            </label>
+          </div>
+        </div>
+
+        <!-- Doctor Fluid Limit Override (Cardiovascular / CKD safety) -->
+        <div class="rounded-3xl bg-white p-5 shadow-sm border border-slate-200/80 space-y-3">
+          <div class="flex items-start space-x-2.5">
+            <span class="text-lg">🩺</span>
+            <div>
+              <h3 class="text-sm font-bold text-slate-900">Doctor-Prescribed Fluid Limit</h3>
+              <p class="text-[11px] text-slate-500">For patients with heart failure or CKD with strict fluid ceilings.</p>
+            </div>
+          </div>
+
+          <div class="pt-1">
+            <div class="relative">
+              <input type="number" id="doctorLimitInput" placeholder="No limit set (leave blank if unrestricted)" min="1000" max="5000" step="100" class="w-full px-3 py-2.5 text-xs rounded-xl border border-slate-300 focus:outline-none focus:ring-2 focus:ring-brand-500">
+              <span class="absolute right-3 top-2.5 text-xs text-slate-400">ml / day</span>
+            </div>
+            <p class="text-[10px] text-slate-400 mt-1.5">If specified, this overrides standard targets to ensure cardiovascular safety.</p>
+            <button onclick="saveDoctorLimit()" class="mt-2.5 px-3 py-1.5 bg-slate-800 hover:bg-slate-700 text-white rounded-xl text-xs font-semibold">
+              Save Doctor Override
+            </button>
+          </div>
+        </div>
+
+        <!-- Wake and Bed Time Windows -->
+        <div class="rounded-3xl bg-white p-5 shadow-sm border border-slate-200/80 space-y-3">
+          <div class="flex items-center space-x-2">
+            <span class="text-lg">⏰</span>
+            <div>
+              <h3 class="text-sm font-bold text-slate-900">Active Hydration Window</h3>
+              <p class="text-[11px] text-slate-500">Your waking hours for reminder pacing</p>
+            </div>
+          </div>
+
+          <div class="grid grid-cols-2 gap-3 pt-1">
+            <div>
+              <label class="block text-[11px] font-semibold text-slate-600 mb-1">Wake Time</label>
+              <input type="time" id="wakeTimeInput" value="07:00" class="w-full px-3 py-2 text-xs rounded-xl border border-slate-300 font-mono">
+            </div>
+            <div>
+              <label class="block text-[11px] font-semibold text-slate-600 mb-1">Bed Time</label>
+              <input type="time" id="bedTimeInput" value="22:00" class="w-full px-3 py-2 text-xs rounded-xl border border-slate-300 font-mono">
+            </div>
+          </div>
+        </div>
+
+        <!-- Kidney Stone Prevention Tips Accordion -->
+        <div class="rounded-3xl bg-white p-5 shadow-sm border border-slate-200/80 space-y-3">
+          <div class="flex items-center space-x-2">
+            <span class="text-lg">💡</span>
+            <h3 class="text-sm font-bold text-slate-900">Kidney Stone Prevention Guide</h3>
+          </div>
+
+          <div class="space-y-2 pt-1 text-xs text-slate-700">
+            <!-- Tip 1 -->
+            <details class="group rounded-xl border border-slate-200 bg-slate-50/50 p-3 [&_summary::-webkit-details-marker]:hidden">
+              <summary class="flex cursor-pointer items-center justify-between font-bold text-slate-800">
+                <span>1. Why Fluid Volume is #1 Defense</span>
+                <span class="transition group-open:-rotate-180">▼</span>
+              </summary>
+              <p class="mt-2 text-[11px] text-slate-600 leading-relaxed">
+                Kidney stones form when minerals in urine become supersaturated and crystallize. High fluid intake directly dilutes calcium, oxalate, and uric acid, preventing nucleation. Studies show maintaining 2.5+ L of urine output slashes stone recurrence by over 50%.
+              </p>
+            </details>
+
+            <!-- Tip 2 -->
+            <details class="group rounded-xl border border-slate-200 bg-slate-50/50 p-3 [&_summary::-webkit-details-marker]:hidden">
+              <summary class="flex cursor-pointer items-center justify-between font-bold text-slate-800">
+                <span>2. The Power of Dietary Citrate</span>
+                <span class="transition group-open:-rotate-180">▼</span>
+              </summary>
+              <p class="mt-2 text-[11px] text-slate-600 leading-relaxed">
+                Citrate is nature's potent crystal inhibitor. It binds with urinary calcium, preventing it from binding with oxalate. Squeeze fresh lemon or lime juice into water to naturally raise urinary citrate and pH.
+              </p>
+            </details>
+
+            <!-- Tip 3 -->
+            <details class="group rounded-xl border border-slate-200 bg-slate-50/50 p-3 [&_summary::-webkit-details-marker]:hidden">
+              <summary class="flex cursor-pointer items-center justify-between font-bold text-slate-800">
+                <span>3. Dietary Oxalate & Calcium Pairing</span>
+                <span class="transition group-open:-rotate-180">▼</span>
+              </summary>
+              <p class="mt-2 text-[11px] text-slate-600 leading-relaxed">
+                Do not avoid dietary calcium! When you consume calcium alongside oxalate foods (spinach, beets, nuts, chocolate), they bind in the gut and exit harmlessly in stool rather than being absorbed into the kidneys.
+              </p>
+            </details>
+
+            <!-- Tip 4 -->
+            <details class="group rounded-xl border border-slate-200 bg-slate-50/50 p-3 [&_summary::-webkit-details-marker]:hidden">
+              <summary class="flex cursor-pointer items-center justify-between font-bold text-slate-800">
+                <span>4. Sodium & Animal Protein Moderation</span>
+                <span class="transition group-open:-rotate-180">▼</span>
+              </summary>
+              <p class="mt-2 text-[11px] text-slate-600 leading-relaxed">
+                Excess dietary salt forces the kidneys to excrete more calcium into urine (hypercalciuria). High animal protein increases uric acid and lowers urine pH, promoting both calcium oxalate and uric acid stones.
+              </p>
+            </details>
+
+            <!-- Tip 5 -->
+            <details class="group rounded-xl border border-slate-200 bg-slate-50/50 p-3 [&_summary::-webkit-details-marker]:hidden">
+              <summary class="flex cursor-pointer items-center justify-between font-bold text-slate-800">
+                <span>5. The Critical Overnight Window</span>
+                <span class="transition group-open:-rotate-180">▼</span>
+              </summary>
+              <p class="mt-2 text-[11px] text-slate-600 leading-relaxed">
+                Urine is most concentrated and acidic between 2:00 AM and 6:00 AM. Always drink a glass of water right before sleep and upon waking to protect the kidneys during the night.
+              </p>
+            </details>
+          </div>
+        </div>
+
+        <!-- Medical Disclaimer -->
+        <div class="rounded-2xl bg-amber-50/80 p-4 border border-amber-200/80 text-[11px] text-amber-900 leading-relaxed">
+          <div class="font-bold mb-1 flex items-center space-x-1">
+            <span>🛡️</span>
+            <span>Clinical Medical Disclaimer</span>
+          </div>
+          HydroStone is an educational hydration companion for kidney stone patients. It is not a medical device and does not provide formal diagnosis or treatment plans. Patients with chronic kidney disease (CKD), congestive heart failure, or prescribed fluid limitations must consult their urologist or nephrologist before altering daily fluid intake.
+        </div>
+
+        <!-- Danger Zone: Reset Data -->
+        <div class="rounded-3xl bg-white p-5 shadow-sm border border-slate-200/80 space-y-3">
+          <h3 class="text-xs font-bold uppercase tracking-wider text-rose-600">Data Management</h3>
+          <p class="text-[11px] text-slate-500">Safely clear today's intake or restore factory presets.</p>
+          <div class="flex space-x-2 pt-1">
+            <button onclick="openResetModal()" class="flex-1 py-2.5 bg-rose-50 hover:bg-rose-100 text-rose-700 border border-rose-200 rounded-xl text-xs font-bold transition-all active:scale-98">
+              Reset Today's Data
+            </button>
+            <button onclick="exportDataJson()" class="px-3 py-2.5 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-xl text-xs font-semibold transition-all" title="Backup your logs to a JSON file">
+              Export Data
+            </button>
+          </div>
+        </div>
+
+      </section>
+
+    </main>
+
+    <!-- Bottom Navigation Bar (Fixed Mobile-First) -->
+    <nav class="fixed bottom-0 z-40 w-full max-w-md bg-white/95 backdrop-blur-md border-t border-slate-200/80 px-2 py-1.5 pb-safe shadow-lg">
+      <div class="grid grid-cols-4 gap-1 text-center">
+        <!-- Tab 1: Today -->
+        <button onclick="switchTab('today')" id="nav-btn-today" class="nav-item flex flex-col items-center py-1.5 px-1 rounded-xl text-brand-600 font-bold transition-colors">
+          <svg class="w-5 h-5 mb-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 2.69l5.66 5.66a8 8 0 1 1-11.31 0z"/>
+          </svg>
+          <span class="text-[10px] tracking-tight">Today</span>
+        </button>
+
+        <!-- Tab 2: Reminders -->
+        <button onclick="switchTab('reminders')" id="nav-btn-reminders" class="nav-item flex flex-col items-center py-1.5 px-1 rounded-xl text-slate-400 hover:text-slate-600 font-semibold transition-colors relative">
+          <svg class="w-5 h-5 mb-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
+          </svg>
+          <span class="text-[10px] tracking-tight">Reminders</span>
+          <span id="navRemindersDot" class="absolute top-1 right-5 w-2 h-2 rounded-full bg-brand-500"></span>
+        </button>
+
+        <!-- Tab 3: Urine Color -->
+        <button onclick="switchTab('urine')" id="nav-btn-urine" class="nav-item flex flex-col items-center py-1.5 px-1 rounded-xl text-slate-400 hover:text-slate-600 font-semibold transition-colors">
+          <svg class="w-5 h-5 mb-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z"/>
+          </svg>
+          <span class="text-[10px] tracking-tight">Urine Color</span>
+        </button>
+
+        <!-- Tab 4: Settings -->
+        <button onclick="switchTab('settings')" id="nav-btn-settings" class="nav-item flex flex-col items-center py-1.5 px-1 rounded-xl text-slate-400 hover:text-slate-600 font-semibold transition-colors">
+          <svg class="w-5 h-5 mb-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/>
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
+          </svg>
+          <span class="text-[10px] tracking-tight">Settings</span>
+        </button>
+      </div>
+    </nav>
+
+
+    <!-- ========================================== -->
+    <!-- MODALS & OVERLAYS                          -->
+    <!-- ========================================== -->
+
+    <!-- 1. Live Reminder Alert Modal -->
+    <div id="reminderModal" class="fixed inset-0 z-50 hidden bg-slate-900/70 backdrop-blur-sm flex items-center justify-center p-4">
+      <div class="w-full max-w-sm rounded-3xl bg-white p-6 shadow-2xl border border-slate-100 text-center animate-bounce-gentle">
+        <div class="mx-auto w-16 h-16 rounded-3xl bg-gradient-to-tr from-brand-600 to-cyan-400 p-3 text-white shadow-lg shadow-brand-500/30 flex items-center justify-center mb-4">
+          <svg class="w-10 h-10 animate-pulse" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 2.69l5.66 5.66a8 8 0 1 1-11.31 0z"/>
+          </svg>
+        </div>
+
+        <span class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-bold bg-brand-50 text-brand-700 border border-brand-200 mb-2">
+          Scheduled Reminder
+        </span>
+        <h3 id="modalReminderTitle" class="text-lg font-extrabold text-slate-900">Afternoon Flush</h3>
+        <p id="modalReminderDesc" class="text-xs text-slate-500 mt-1">Recommended target: <span class="font-bold text-slate-800" id="modalReminderAmount">350</span> ml water</p>
+        
+        <div class="my-4 p-3 rounded-2xl bg-slate-50 text-[11px] text-slate-600 border border-slate-200/80 text-left">
+          💡 <strong class="text-slate-800">Clinical Reminder:</strong> Drinking fluids steadily across the day prevents urine supersaturation and stops microscopic stones from aggregating.
+        </div>
+
+        <!-- 3 Action Buttons -->
+        <div class="space-y-2">
+          <button id="modalDrinkNowBtn" class="w-full py-3 bg-brand-600 hover:bg-brand-500 active:scale-95 text-white rounded-2xl font-bold text-sm shadow-md shadow-brand-500/30 transition-all flex items-center justify-center space-x-1.5">
+            <span>Drink Now (+<span id="modalDrinkAmountBtnText">350</span> ml)</span>
+          </button>
+          
+          <div class="grid grid-cols-2 gap-2">
+            <button onclick="snoozeReminder(15)" class="py-2.5 bg-slate-100 hover:bg-slate-200 active:scale-95 text-slate-700 rounded-xl font-semibold text-xs transition-all">
+              Snooze 15 min
+            </button>
+            <button onclick="dismissReminderModal()" class="py-2.5 bg-slate-100 hover:bg-slate-200 active:scale-95 text-slate-700 rounded-xl font-semibold text-xs transition-all">
+              Dismiss
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+
+    <!-- 2. Soda & High Oxalate Gentle Stone-Risk Tip Modal -->
+    <div id="sodaWarningModal" class="fixed inset-0 z-50 hidden bg-slate-900/60 backdrop-blur-sm flex items-center justify-center p-4">
+      <div class="w-full max-w-sm rounded-3xl bg-white p-6 shadow-2xl border border-slate-100 text-center">
+        <div class="mx-auto w-14 h-14 rounded-2xl bg-rose-100 text-rose-600 flex items-center justify-center text-2xl mb-3">
+          🥤
+        </div>
+        <h3 class="text-base font-black text-slate-900">Gentle Stone-Risk Tip</h3>
+        <p class="text-xs text-slate-600 mt-2 leading-relaxed text-left bg-rose-50/70 p-3 rounded-2xl border border-rose-100">
+          Dark colas frequently contain <strong class="text-rose-900">phosphoric acid</strong>, and strong black teas are rich in <strong class="text-rose-900">soluble oxalates</strong>. Both can heighten kidney stone precipitation risk.
+        </p>
+        <p class="text-[11px] text-slate-500 mt-2 text-left">
+          <strong>Best Practice:</strong> Enjoy in moderation, and always drink an extra glass of water immediately afterward to keep urinary solutes dilute!
+        </p>
+
+        <div class="mt-4 space-y-2">
+          <button onclick="logBeverage('Soda / Tea with Water Chaser', 350, 'soda_water'); closeSodaModal();" class="w-full py-2.5 bg-brand-600 hover:bg-brand-500 text-white rounded-xl text-xs font-bold transition-all shadow-sm">
+            Log Beverage + Water Chaser (+350 ml)
+          </button>
+          <button onclick="logBeverage('Soda / Strong Tea', 200, 'soda'); closeSodaModal();" class="w-full py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-xl text-xs font-semibold transition-all">
+            Log Just Beverage (+200 ml)
+          </button>
+          <button onclick="closeSodaModal()" class="w-full py-1.5 text-xs text-slate-400 hover:text-slate-600">
+            Cancel
+          </button>
+        </div>
+      </div>
+    </div>
+
+
+    <!-- 3. Custom Volume Log Modal -->
+    <div id="customDrinkModal" class="fixed inset-0 z-50 hidden bg-slate-900/60 backdrop-blur-sm flex items-center justify-center p-4">
+      <div class="w-full max-w-sm rounded-3xl bg-white p-6 shadow-2xl border border-slate-100">
+        <div class="flex items-center justify-between mb-3">
+          <h3 class="text-sm font-bold text-slate-900">Log Custom Beverage</h3>
+          <button onclick="closeCustomDrinkModal()" class="text-slate-400 hover:text-slate-600 text-lg">✕</button>
+        </div>
+
+        <form id="customDrinkForm" onsubmit="handleCustomDrinkSubmit(event)" class="space-y-3">
+          <div>
+            <label class="block text-[11px] font-semibold text-slate-600 mb-1">Beverage Name</label>
+            <input type="text" id="customDrinkName" placeholder="e.g. Coconut Water, Herbal Tea" required class="w-full px-3 py-2 text-xs rounded-xl border border-slate-300 focus:outline-none focus:ring-2 focus:ring-brand-500">
+          </div>
+          <div>
+            <label class="block text-[11px] font-semibold text-slate-600 mb-1">Volume (ml)</label>
+            <div class="relative">
+              <input type="number" id="customDrinkAmount" placeholder="300" min="20" max="2500" step="10" required class="w-full px-3 py-2 text-xs rounded-xl border border-slate-300 focus:outline-none focus:ring-2 focus:ring-brand-500 font-mono font-bold">
+              <span class="absolute right-3 top-2 text-xs text-slate-400 font-medium">ml</span>
+            </div>
+          </div>
+          <div class="flex items-center space-x-2 pt-1">
+            <input type="checkbox" id="customDrinkIsCitrate" class="rounded text-brand-600 border-slate-300">
+            <label for="customDrinkIsCitrate" class="text-xs text-slate-700 font-medium">Contains Lemon / Citrate Boost 🍋</label>
+          </div>
+          <button type="submit" class="w-full mt-2 py-2.5 bg-brand-600 hover:bg-brand-500 text-white rounded-xl text-xs font-bold transition-all shadow-sm">
+            Add to Log
+          </button>
+        </form>
+      </div>
+    </div>
+
+
+    <!-- 4. Reset Today's Data Modal -->
+    <div id="resetModal" class="fixed inset-0 z-50 hidden bg-slate-900/60 backdrop-blur-sm flex items-center justify-center p-4">
+      <div class="w-full max-w-sm rounded-3xl bg-white p-6 shadow-2xl border border-slate-100 text-center">
+        <div class="mx-auto w-12 h-12 rounded-2xl bg-rose-100 text-rose-600 flex items-center justify-center text-xl mb-3">
+          ⚠️
+        </div>
+        <h3 class="text-base font-bold text-slate-900">Reset Today's Data?</h3>
+        <p class="text-xs text-slate-500 mt-1 leading-relaxed">
+          This will reset today's fluid intake to 0 ml and delete today's drink entries. Your reminder schedules, streak, and clinical presets will remain safe.
+        </p>
+
+        <div class="mt-4 grid grid-cols-2 gap-2">
+          <button onclick="confirmResetToday()" class="py-2.5 bg-rose-600 hover:bg-rose-500 text-white rounded-xl text-xs font-bold transition-all">
+            Yes, Reset
+          </button>
+          <button onclick="closeResetModal()" class="py-2.5 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-xl text-xs font-semibold transition-all">
+            Cancel
+          </button>
+        </div>
+      </div>
+    </div>
+
+
+    <!-- Toast Notification Floater -->
+    <div id="toastNotification" class="fixed top-4 left-1/2 -translate-x-1/2 z-50 pointer-events-none transition-all duration-300 transform -translate-y-12 opacity-0 flex items-center space-x-2 px-4 py-2.5 rounded-2xl bg-slate-900 text-white text-xs font-semibold shadow-xl border border-slate-700">
+      <span id="toastIcon">💧</span>
+      <span id="toastMessage">Fluid intake recorded</span>
+    </div>
+
+  </div> <!-- End Shell Container -->
+
+
+  <!-- ========================================== -->
+  <!-- JAVASCRIPT LOGIC & STATE PERSISTENCE       -->
+  <!-- ========================================== -->
+  <script>
+    /* ----------------------------------------------------
+       Default State & LocalStorage Schema
+    ---------------------------------------------------- */
+    const STORAGE_KEY = 'hydrostone_app_state_v1';
+
+    const defaultState = {
+      version: 1,
+      lastActiveDate: getTodayDateString(),
+      streakCount: 0,
+      
+      // Clinical Goals
+      baseGoal: 3000, // 3.0 L clinical standard
+      doctorLimit: null, // Optional doctor override
+      hotDayActive: false, // +500 ml
+      workoutActive: false, // +600 ml
+      
+      // Daily Logs
+      currentIntake: 0,
+      drinksLog: [], // { id, name, amount, type, timestamp, isCitrate }
+      urineChecks: [], // { id, level, label, timestamp }
+      
+      // Reminder Settings
+      remindersEnabled: true,
+      audioChimeEnabled: true,
+      pushNotificationsEnabled: false,
+      wakeTime: '07:00',
+      bedTime: '21:00',
+      
+      // Reminders List
+      reminders: [
+        { id: 'rem-1', time: '07:00', label: 'Morning Flush', amount: 500, active: true },
+        { id: 'rem-2', time: '09:00', label: 'Mid-Morning Boost', amount: 350, active: true },
+        { id: 'rem-3', time: '11:00', label: 'Pre-Lunch Hydration', amount: 350, active: true },
+        { id: 'rem-4', time: '13:00', label: 'Post-Lunch Flush', amount: 400, active: true },
+        { id: 'rem-5', time: '15:00', label: 'Afternoon Dilution', amount: 350, active: true },
+        { id: 'rem-6', time: '17:00', label: 'Evening Prep', amount: 350, active: true },
+        { id: 'rem-7', time: '19:00', label: 'Dinner Water', amount: 450, active: true },
+        { id: 'rem-8', time: '21:00', label: 'Pre-Bed Sip', amount: 250, active: true }
+      ],
+      snoozedReminders: [] // { targetTimestamp, label, amount }
+    };
+
+    let appState = loadState();
+    let pendingModalReminder = null;
+    let lastCheckedMinute = '';
+
+    /* ----------------------------------------------------
+       Initialization
+    ---------------------------------------------------- */
+    document.addEventListener('DOMContentLoaded', () => {
+      checkDateRollover();
+      initUI();
+      renderAll();
+      setupEventListeners();
+      startBackgroundClock();
+    });
+
+    function getTodayDateString() {
+      const now = new Date();
+      return `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')}`;
+    }
+
+    function loadState() {
+      try {
+        const saved = localStorage.getItem(STORAGE_KEY);
+        if (saved) {
+          const parsed = JSON.parse(saved);
+          return { ...defaultState, ...parsed };
+        }
+      } catch (e) {
+        console.error('Error reading localStorage:', e);
+      }
+      return JSON.parse(JSON.stringify(defaultState));
+    }
+
+    function saveState() {
+      try {
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(appState));
+      } catch (e) {
+        console.error('Error saving state:', e);
+      }
+    }
+
+    /* ----------------------------------------------------
+       Date Rollover (Daily Intake Reset & Streak Logic)
+    ---------------------------------------------------- */
+    function checkDateRollover() {
+      const today = getTodayDateString();
+      if (appState.lastActiveDate !== today) {
+        const effectiveGoal = getEffectiveGoal();
+        if (appState.currentIntake >= effectiveGoal) {
+          appState.streakCount += 1;
+        } else if (appState.currentIntake === 0 && appState.streakCount > 0) {
+          // If a whole day was skipped with 0 intake, reset streak
+          appState.streakCount = 0;
+        }
+        
+        // Reset daily metrics for new date
+        appState.lastActiveDate = today;
+        appState.currentIntake = 0;
+        appState.drinksLog = [];
+        appState.urineChecks = [];
+        appState.hotDayActive = false;
+        appState.workoutActive = false;
+        appState.snoozedReminders = [];
+        saveState();
+      }
+    }
+
+    function getEffectiveGoal() {
+      if (appState.doctorLimit && appState.doctorLimit > 0) {
+        return appState.doctorLimit;
+      }
+      let goal = appState.baseGoal;
+      if (appState.hotDayActive) goal += 500;
+      if (appState.workoutActive) goal += 600;
+      return goal;
+    }
+
+    /* ----------------------------------------------------
+       UI Initialization & Listeners
+    ---------------------------------------------------- */
+    function initUI() {
+      // Date formatting
+      const now = new Date();
+      const options = { weekday: 'short', month: 'short', day: 'numeric' };
+      document.getElementById('currentDateDisplay').textContent = now.toLocaleDateString(undefined, options);
+
+      // Reminders Toggle Checks
+      document.getElementById('masterReminderToggle').checked = appState.remindersEnabled;
+      document.getElementById('audioChimeToggle').checked = appState.audioChimeEnabled;
+      document.getElementById('browserPushToggle').checked = appState.pushNotificationsEnabled;
+
+      // Settings Inputs
+      if (appState.doctorLimit) {
+        document.getElementById('doctorLimitInput').value = appState.doctorLimit;
+      }
+      const presetRadios = document.getElementsByName('goalPreset');
+      presetRadios.forEach(radio => {
+        radio.checked = (parseInt(radio.value) === appState.baseGoal);
+      });
+      document.getElementById('wakeTimeInput').value = appState.wakeTime || '07:00';
+      document.getElementById('bedTimeInput').value = appState.bedTime || '21:00';
+    }
+
+    function setupEventListeners() {
+      // Audio chime quick test
+      document.getElementById('quickTestChimeBtn').addEventListener('click', () => {
+        playWebAudioChime();
+        showToast('🔔 Chime preview played', '💧');
+      });
+
+      // Test Alert card button
+      document.getElementById('testAlertNowBtn').addEventListener('click', () => {
+        triggerReminderAlert({ label: 'Test Hydration Flush', amount: 300 });
+      });
+
+      // Reminders Tab Test Button
+      document.getElementById('testReminderNowDirectBtn').addEventListener('click', () => {
+        triggerReminderAlert({ label: 'Test Scheduled Reminder', amount: 350 });
+      });
+
+      // Hot Day & Workout Toggles
+      document.getElementById('toggleHotDayBtn').addEventListener('click', () => {
+        appState.hotDayActive = !appState.hotDayActive;
+        saveState();
+        renderDashboard();
+        showToast(appState.hotDayActive ? 'Hot Day active: Goal +500 ml' : 'Hot Day removed', '☀️');
+      });
+
+      document.getElementById('toggleWorkoutBtn').addEventListener('click', () => {
+        appState.workoutActive = !appState.workoutActive;
+        saveState();
+        renderDashboard();
+        showToast(appState.workoutActive ? 'Workout active: Goal +600 ml' : 'Workout removed', '🏃‍♂️');
+      });
+
+      // Master Reminders Toggle
+      document.getElementById('masterReminderToggle').addEventListener('change', (e) => {
+        appState.remindersEnabled = e.target.checked;
+        saveState();
+        renderReminders();
+        showToast(appState.remindersEnabled ? 'Reminders enabled' : 'Reminders paused', '⏰');
+      });
+
+      // Audio Chime Toggle
+      document.getElementById('audioChimeToggle').addEventListener('change', (e) => {
+        appState.audioChimeEnabled = e.target.checked;
+        saveState();
+        if (appState.audioChimeEnabled) playWebAudioChime();
+      });
+
+      // Browser Push Toggle
+      document.getElementById('browserPushToggle').addEventListener('change', async (e) => {
+        if (e.target.checked) {
+          if ('Notification' in window) {
+            const permission = await Notification.requestPermission();
+            if (permission === 'granted') {
+              appState.pushNotificationsEnabled = true;
+              showToast('Push notifications enabled!', '📲');
+            } else {
+              appState.pushNotificationsEnabled = false;
+              e.target.checked = false;
+              showToast('Permission not granted in browser', '⚠️');
+            }
+          } else {
+            appState.pushNotificationsEnabled = false;
+            e.target.checked = false;
+            showToast('Browser does not support notifications', '⚠️');
+          }
+        } else {
+          appState.pushNotificationsEnabled = false;
+        }
+        saveState();
+      });
+
+      // Custom Log Beverage Modal
+      document.getElementById('customLogBtn').addEventListener('click', () => {
+        document.getElementById('customDrinkModal').classList.remove('hidden');
+      });
+
+      // Toggle Add Reminder Form
+      document.getElementById('toggleAddReminderFormBtn').addEventListener('click', () => {
+        const form = document.getElementById('addReminderForm');
+        const chevron = document.getElementById('addReminderFormChevron');
+        form.classList.toggle('hidden');
+        chevron.textContent = form.classList.contains('hidden') ? '▼' : '▲';
+      });
+
+      // Add Custom Reminder Form Submit
+      document.getElementById('addReminderForm').addEventListener('submit', (e) => {
+        e.preventDefault();
+        const time = document.getElementById('newReminderTime').value;
+        const amount = parseInt(document.getElementById('newReminderAmount').value) || 300;
+        const label = document.getElementById('newReminderLabel').value.trim() || 'Hydration Reminder';
+
+        const newReminder = {
+          id: 'rem-' + Date.now(),
+          time,
+          amount,
+          label,
+          active: true
+        };
+
+        appState.reminders.push(newReminder);
+        // Sort reminders by time
+        appState.reminders.sort((a, b) => a.time.localeCompare(b.time));
+        saveState();
+        renderReminders();
+        renderDashboard();
+
+        // Reset form
+        document.getElementById('addReminderForm').reset();
+        document.getElementById('addReminderForm').classList.add('hidden');
+        document.getElementById('addReminderFormChevron').textContent = '▼';
+        showToast(`Added ${time} (${amount} ml) reminder`, '⏰');
+      });
+
+      // Modal Drink Now action
+      document.getElementById('modalDrinkNowBtn').addEventListener('click', () => {
+        if (pendingModalReminder) {
+          logBeverage(pendingModalReminder.label, pendingModalReminder.amount, 'water');
+          dismissReminderModal();
+        }
+      });
+    }
+
+    /* ----------------------------------------------------
+       Rendering Pipelines
+    ---------------------------------------------------- */
+    function renderAll() {
+      renderDashboard();
+      renderReminders();
+      renderUrineScale();
+      renderSettings();
+    }
+
+    function renderDashboard() {
+      const effectiveGoal = getEffectiveGoal();
+      const intake = appState.currentIntake;
+      const percent = Math.min(100, Math.round((intake / effectiveGoal) * 100));
+
+      // 1. Text Metrics
+      document.getElementById('currentIntakeVal').textContent = intake.toLocaleString();
+      document.getElementById('targetGoalVal').textContent = effectiveGoal.toLocaleString();
+      document.getElementById('percentBadge').textContent = `${percent}%`;
+      document.getElementById('streakCount').textContent = `${appState.streakCount}d`;
+
+      // 2. SVG Ring
+      // Circumference = 2 * PI * 82 ≈ 515.22
+      const circumference = 515.22;
+      const offset = circumference - (percent / 100) * circumference;
+      const circle = document.getElementById('intakeProgressCircle');
+      circle.style.strokeDashoffset = offset;
+
+      // 3. Estimated Urine Output (Clinical formula: ~75% of intake minus sensible losses)
+      // Standard target is >= 2.0 to 2.5 L/day
+      const estUrineOutputL = (Math.max(0, intake * 0.75) / 1000).toFixed(1);
+      document.getElementById('estUrineOutputVal').textContent = estUrineOutputL;
+
+      const urineBadge = document.getElementById('urineTargetBadge');
+      if (parseFloat(estUrineOutputL) >= 2.2) {
+        urineBadge.textContent = 'Target Met (Dilute)';
+        urineBadge.className = 'inline-block text-[10px] font-bold px-1.5 py-0.5 rounded bg-emerald-100 text-emerald-800 border border-emerald-200';
+      } else if (parseFloat(estUrineOutputL) >= 1.5) {
+        urineBadge.textContent = 'Approaching Target';
+        urineBadge.className = 'inline-block text-[10px] font-bold px-1.5 py-0.5 rounded bg-amber-50 text-amber-800 border border-amber-200';
+      } else {
+        urineBadge.textContent = 'Below Target';
+        urineBadge.className = 'inline-block text-[10px] font-bold px-1.5 py-0.5 rounded bg-rose-50 text-rose-700 border border-rose-200';
+      }
+
+      // 4. Dynamic Adjustment Toggles state
+      renderCheckbox('hotDayCheckbox', appState.hotDayActive, 'bg-amber-500 border-amber-500');
+      renderCheckbox('workoutCheckbox', appState.workoutActive, 'bg-brand-500 border-brand-500');
+
+      // 5. Next Reminder Display
+      updateNextReminderCard();
+
+      // 6. Drink Log List
+      renderDrinkLog();
+
+      // 7. Header Clinical Status Banner
+      updateClinicalPaceBanner();
+    }
+
+    function renderCheckbox(elementId, isActive, activeClasses) {
+      const el = document.getElementById(elementId);
+      if (isActive) {
+        el.className = `w-5 h-5 rounded-md flex items-center justify-center text-white ${activeClasses}`;
+        el.innerHTML = `<svg class="w-3.5 h-3.5" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/></svg>`;
+      } else {
+        el.className = 'w-5 h-5 rounded-md border-2 border-slate-300 flex items-center justify-center text-transparent bg-white';
+        el.innerHTML = '';
+      }
+    }
+
+    function renderDrinkLog() {
+      const container = document.getElementById('drinkLogContainer');
+      const emptyState = document.getElementById('emptyLogState');
+      const countEl = document.getElementById('logItemCount');
+      const citratePill = document.getElementById('citrateCountPill');
+      const citrateText = document.getElementById('citrateCountText');
+
+      const logs = appState.drinksLog || [];
+      countEl.textContent = logs.length;
+
+      // Count citrate
+      const citrateCount = logs.filter(l => l.isCitrate).length;
+      if (citrateCount > 0) {
+        citratePill.classList.remove('hidden');
+        citratePill.classList.add('flex');
+        citrateText.textContent = `${citrateCount} Citrate Boost${citrateCount > 1 ? 's' : ''}`;
+      } else {
+        citratePill.classList.add('hidden');
+        citratePill.classList.remove('flex');
+      }
+
+      if (logs.length === 0) {
+        container.innerHTML = '';
+        container.appendChild(emptyState);
+        emptyState.classList.remove('hidden');
+        return;
+      }
+
+      emptyState.classList.add('hidden');
+      
+      // Render newest first
+      const reversed = [...logs].reverse();
+      container.innerHTML = reversed.map(item => {
+        let icon = '💧';
+        let badgeColor = 'bg-brand-50 text-brand-700 border-brand-100';
+        if (item.type === 'citrate' || item.isCitrate) {
+          icon = '🍋';
+          badgeColor = 'bg-amber-50 text-amber-800 border-amber-200';
+        } else if (item.type === 'bottle') {
+          icon = '🍶';
+          badgeColor = 'bg-cyan-50 text-cyan-800 border-cyan-100';
+        } else if (item.type === 'soda' || item.type === 'soda_water') {
+          icon = '🥤';
+          badgeColor = 'bg-rose-50 text-rose-800 border-rose-200';
+        }
+
+        return `
+          <div class="flex items-center justify-between p-2.5 rounded-2xl bg-slate-50 border border-slate-200/70 hover:bg-slate-100/70 transition-colors">
+            <div class="flex items-center space-x-2.5">
+              <span class="text-xl">${icon}</span>
+              <div>
+                <div class="flex items-center space-x-1.5">
+                  <span class="text-xs font-bold text-slate-800">${escapeHtml(item.name)}</span>
+                  ${item.isCitrate ? '<span class="text-[9px] font-bold bg-amber-100 text-amber-800 px-1 py-0.2 rounded">Citrate</span>' : ''}
+                </div>
+                <span class="text-[10px] text-slate-400 font-mono">${item.timestamp}</span>
+              </div>
+            </div>
+            <div class="flex items-center space-x-2">
+              <span class="text-xs font-mono font-bold px-2 py-0.5 rounded-lg border ${badgeColor}">+${item.amount} ml</span>
+              <button onclick="deleteDrinkEntry('${item.id}')" class="p-1 text-slate-400 hover:text-rose-600 rounded-lg transition-colors" title="Delete entry">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/>
+                </svg>
+              </button>
+            </div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    function renderReminders() {
+      const container = document.getElementById('remindersListContainer');
+      const badge = document.getElementById('activeRemindersCountBadge');
+      
+      const reminders = appState.reminders || [];
+      const activeCount = reminders.filter(r => r.active).length;
+      badge.textContent = `${activeCount} Active / ${reminders.length} Total`;
+
+      if (reminders.length === 0) {
+        container.innerHTML = `
+          <div class="p-6 text-center text-xs text-slate-400 bg-white rounded-2xl border border-slate-200">
+            No reminders scheduled. Tap above to auto-generate intervals.
+          </div>
+        `;
+        return;
+      }
+
+      container.innerHTML = reminders.map(r => `
+        <div class="flex items-center justify-between p-3.5 rounded-2xl bg-white border border-slate-200/80 shadow-xs ${!r.active ? 'opacity-50' : ''}">
+          <div class="flex items-center space-x-3">
+            <div class="text-center font-mono w-14">
+              <span class="text-sm font-black text-slate-900">${r.time}</span>
+            </div>
+            <div>
+              <div class="text-xs font-bold text-slate-800">${escapeHtml(r.label)}</div>
+              <div class="text-[11px] font-semibold text-brand-600">${r.amount} ml recommended</div>
+            </div>
+          </div>
+          <div class="flex items-center space-x-2">
+            <!-- Toggle Individual Reminder -->
+            <button onclick="toggleReminderItem('${r.id}')" class="p-1.5 rounded-lg border text-xs font-semibold ${r.active ? 'bg-brand-50 text-brand-700 border-brand-200' : 'bg-slate-100 text-slate-400 border-slate-200'}" title="${r.active ? 'Pause reminder' : 'Enable reminder'}">
+              ${r.active ? 'Active' : 'Off'}
+            </button>
+            <!-- Delete Button -->
+            <button onclick="deleteReminderItem('${r.id}')" class="p-1.5 text-slate-400 hover:text-rose-600 rounded-lg transition-colors" title="Delete">
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+              </svg>
+            </button>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    function renderUrineScale() {
+      const historyContainer = document.getElementById('urineCheckList');
+      const countEl = document.getElementById('urineHistoryCount');
+      const emptyMsg = document.getElementById('emptyUrineCheckMsg');
+
+      const checks = appState.urineChecks || [];
+      countEl.textContent = `${checks.length} check${checks.length === 1 ? '' : 's'}`;
+
+      if (checks.length === 0) {
+        historyContainer.innerHTML = '';
+        historyContainer.appendChild(emptyMsg);
+        emptyMsg.classList.remove('hidden');
+        return;
+      }
+
+      emptyMsg.classList.add('hidden');
+      const reversed = [...checks].reverse();
+      historyContainer.innerHTML = reversed.map(c => `
+        <div class="flex items-center justify-between p-2.5 rounded-2xl bg-slate-50 border border-slate-200">
+          <div class="flex items-center space-x-3">
+            <div class="w-6 h-6 rounded-full shadow-inner border border-slate-300" style="background-color: ${getUrineHex(c.level)};"></div>
+            <div>
+              <div class="text-xs font-bold text-slate-800">Level ${c.level}: ${c.label}</div>
+              <div class="text-[10px] text-slate-400 font-mono">${c.timestamp}</div>
+            </div>
+          </div>
+          <button onclick="deleteUrineCheck('${c.id}')" class="p-1 text-slate-400 hover:text-rose-600 rounded transition-colors">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/>
+            </svg>
+          </button>
+        </div>
+      `).join('');
+    }
+
+    function renderSettings() {
+      // Refresh UI settings
+      if (appState.doctorLimit) {
+        document.getElementById('doctorLimitInput').value = appState.doctorLimit;
+      }
+    }
+
+    /* ----------------------------------------------------
+       Beverage Logging Actions
+    ---------------------------------------------------- */
+    function logBeverage(name, amount, type) {
+      const now = new Date();
+      const timeStr = now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+      const isCitrate = (type === 'citrate' || name.toLowerCase().includes('lemon') || name.toLowerCase().includes('citrate'));
+
+      const entry = {
+        id: 'drink-' + Date.now(),
+        name,
+        amount: parseInt(amount),
+        type,
+        timestamp: timeStr,
+        isCitrate
+      };
+
+      appState.drinksLog.push(entry);
+      appState.currentIntake += parseInt(amount);
+
+      saveState();
+      renderDashboard();
+
+      // Audio & Visual Feedback
+      if (appState.audioChimeEnabled) {
+        playWebAudioChime();
+      }
+
+      showToast(`+${amount} ml ${name} logged!`, isCitrate ? '🍋' : '💧');
+    }
+
+    function deleteDrinkEntry(id) {
+      const index = appState.drinksLog.findIndex(i => i.id === id);
+      if (index !== -1) {
+        const removed = appState.drinksLog.splice(index, 1)[0];
+        appState.currentIntake = Math.max(0, appState.currentIntake - removed.amount);
+        saveState();
+        renderDashboard();
+        showToast(`Removed -${removed.amount} ml`, '🗑️');
+      }
+    }
+
+    /* ----------------------------------------------------
+       Soda / High-Oxalate Stone Risk Warning
+    ---------------------------------------------------- */
+    function triggerSodaWarning() {
+      document.getElementById('sodaWarningModal').classList.remove('hidden');
+    }
+
+    function closeSodaModal() {
+      document.getElementById('sodaWarningModal').classList.add('hidden');
+    }
+
+    /* ----------------------------------------------------
+       Custom Drink Modal Handlers
+    ---------------------------------------------------- */
+    function closeCustomDrinkModal() {
+      document.getElementById('customDrinkModal').classList.add('hidden');
+      document.getElementById('customDrinkForm').reset();
+    }
+
+    function handleCustomDrinkSubmit(e) {
+      e.preventDefault();
+      const name = document.getElementById('customDrinkName').value.trim() || 'Custom Beverage';
+      const amount = parseInt(document.getElementById('customDrinkAmount').value) || 250;
+      const isCitrate = document.getElementById('customDrinkIsCitrate').checked;
+
+      logBeverage(name, amount, isCitrate ? 'citrate' : 'custom');
+      closeCustomDrinkModal();
+    }
+
+    /* ----------------------------------------------------
+       Reminders & Auto-Schedule Generator
+    ---------------------------------------------------- */
+    function generateSchedule(intervalMinutes) {
+      const wake = appState.wakeTime || '07:00';
+      const bed = appState.bedTime || '21:00';
+
+      const [wH, wM] = wake.split(':').map(Number);
+      const [bH, bM] = bed.split(':').map(Number);
+
+      const startMinutes = wH * 60 + wM;
+      const endMinutes = bH * 60 + bM;
+
+      const newReminders = [];
+      let current = startMinutes;
+      let count = 1;
+
+      while (current <= endMinutes) {
+        const hours = Math.floor(current / 60);
+        const mins = current % 60;
+        const timeStr = `${String(hours).padStart(2, '0')}:${String(mins).padStart(2, '0')}`;
+
+        let label = 'Scheduled Hydration';
+        let amount = 350;
+
+        if (count === 1) {
+          label = 'Morning Flush';
+          amount = 500;
+        } else if (current + intervalMinutes > endMinutes) {
+          label = 'Pre-Bed Sip';
+          amount = 250;
+        } else {
+          const titles = ['Mid-Morning Sip', 'Pre-Lunch Hydration', 'Post-Lunch Dilution', 'Afternoon Flush', 'Evening Hydration', 'Dinner Water'];
+          label = titles[(count - 2) % titles.length];
+        }
+
+        newReminders.push({
+          id: 'rem-' + Date.now() + '-' + count,
+          time: timeStr,
+          label,
+          amount,
+          active: true
+        });
+
+        current += intervalMinutes;
+        count++;
+      }
+
+      appState.reminders = newReminders;
+      saveState();
+      renderReminders();
+      renderDashboard();
+      showToast(`Generated ${newReminders.length} spaced reminders!`, '⏰');
+    }
+
+    function toggleReminderItem(id) {
+      const item = appState.reminders.find(r => r.id === id);
+      if (item) {
+        item.active = !item.active;
+        saveState();
+        renderReminders();
+        renderDashboard();
+      }
+    }
+
+    function deleteReminderItem(id) {
+      appState.reminders = appState.reminders.filter(r => r.id !== id);
+      saveState();
+      renderReminders();
+      renderDashboard();
+      showToast('Reminder deleted', '🗑️');
+    }
+
+    function updateNextReminderCard() {
+      const nextCardTitle = document.getElementById('nextReminderText');
+      const nextCardCountdown = document.getElementById('nextReminderCountdown');
+
+      if (!appState.remindersEnabled) {
+        nextCardTitle.textContent = 'Reminders are paused';
+        nextCardCountdown.textContent = 'Toggle master switch in Reminders tab';
+        return;
+      }
+
+      const activeReminders = (appState.reminders || []).filter(r => r.active);
+      if (activeReminders.length === 0) {
+        nextCardTitle.textContent = 'No active reminders';
+        nextCardCountdown.textContent = 'Tap to configure daily schedule';
+        return;
+      }
+
+      const now = new Date();
+      const currentMinutes = now.getHours() * 60 + now.getMinutes();
+
+      // Find next upcoming today
+      let next = null;
+      let diffMinutes = 999999;
+
+      for (const r of activeReminders) {
+        const [rH, rM] = r.time.split(':').map(Number);
+        const remMinutes = rH * 60 + rM;
+        if (remMinutes > currentMinutes) {
+          const diff = remMinutes - currentMinutes;
+          if (diff < diffMinutes) {
+            diffMinutes = diff;
+            next = r;
+          }
+        }
+      }
+
+      if (next) {
+        const hours = Math.floor(diffMinutes / 60);
+        const mins = diffMinutes % 60;
+        const countdownStr = hours > 0 ? `in ${hours}h ${mins}m` : `in ${mins} min${mins === 1 ? '' : 's'}`;
+        nextCardTitle.textContent = `${next.time} • ${next.label} (${next.amount} ml)`;
+        nextCardCountdown.textContent = `${countdownStr} • Stay Dilute`;
+      } else {
+        // All finished for today, wraps to first reminder tomorrow
+        const first = activeReminders[0];
+        nextCardTitle.textContent = `Tomorrow at ${first.time} • ${first.label}`;
+        nextCardCountdown.textContent = 'Daily hydration schedule complete!';
+      }
+    }
+
+    /* ----------------------------------------------------
+       In-App Popup Modal & Sound Chime Engine
+    ---------------------------------------------------- */
+    function triggerReminderAlert(reminder) {
+      pendingModalReminder = reminder;
+      document.getElementById('modalReminderTitle').textContent = reminder.label;
+      document.getElementById('modalReminderAmount').textContent = reminder.amount;
+      document.getElementById('modalDrinkAmountBtnText').textContent = reminder.amount;
+      document.getElementById('reminderModal').classList.remove('hidden');
+
+      // Audio chime
+      if (appState.audioChimeEnabled) {
+        playWebAudioChime();
+      }
+
+      // Browser Push Notification (if granted)
+      if (appState.pushNotificationsEnabled && 'Notification' in window && Notification.permission === 'granted') {
+        try {
+          new Notification('HydroStone Hydration Reminder', {
+            body: `Time for your ${reminder.label} (${reminder.amount} ml)! Maintain urine dilution.`,
+            icon: 'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"%3E%3Cpath fill="%230284c7" d="M12 2.69l5.66 5.66a8 8 0 1 1-11.31 0z"/%3E%3C/svg%3E'
+          });
+        } catch (e) {
+          console.warn('Push error:', e);
+        }
+      }
+    }
+
+    function dismissReminderModal() {
+      document.getElementById('reminderModal').classList.add('hidden');
+      pendingModalReminder = null;
+    }
+
+    function snoozeReminder(minutes) {
+      dismissReminderModal();
+      const targetTime = Date.now() + minutes * 60 * 1000;
+      appState.snoozedReminders = appState.snoozedReminders || [];
+      appState.snoozedReminders.push({
+        targetTime,
+        label: (pendingModalReminder ? pendingModalReminder.label : 'Hydration Reminder') + ' (Snoozed)',
+        amount: pendingModalReminder ? pendingModalReminder.amount : 300
+      });
+      saveState();
+      showToast(`Reminder snoozed for ${minutes} minutes`, '⏰');
+    }
+
+    /* Web Audio API Synthesizer (Pleasant two-tone bell chime) */
+    function playWebAudioChime() {
+      try {
+        const AudioCtx = window.AudioContext || window.webkitAudioContext;
+        if (!AudioCtx) return;
+        const ctx = new AudioCtx();
+        if (ctx.state === 'suspended') {
+          ctx.resume();
+        }
+
+        const now = ctx.currentTime;
+
+        // Note 1: E5 (659.25 Hz)
+        const osc1 = ctx.createOscillator();
+        const gain1 = ctx.createGain();
+        osc1.type = 'sine';
+        osc1.frequency.setValueAtTime(659.25, now);
+        gain1.gain.setValueAtTime(0.2, now);
+        gain1.gain.exponentialRampToValueAtTime(0.001, now + 0.5);
+        osc1.connect(gain1);
+        gain1.connect(ctx.destination);
+        osc1.start(now);
+        osc1.stop(now + 0.5);
+
+        // Note 2: A5 (880 Hz) harmonic
+        const osc2 = ctx.createOscillator();
+        const gain2 = ctx.createGain();
+        osc2.type = 'sine';
+        osc2.frequency.setValueAtTime(880, now + 0.15);
+        gain2.gain.setValueAtTime(0.25, now + 0.15);
+        gain2.gain.exponentialRampToValueAtTime(0.001, now + 0.85);
+        osc2.connect(gain2);
+        gain2.connect(ctx.destination);
+        osc2.start(now + 0.15);
+        osc2.stop(now + 0.85);
+      } catch (err) {
+        console.warn('Web Audio note failed:', err);
+      }
+    }
+
+    /* ----------------------------------------------------
+       Background Clock Runner (Per-second inspection)
+    ---------------------------------------------------- */
+    function startBackgroundClock() {
+      setInterval(() => {
+        const now = new Date();
+        const currentMinuteStr = `${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}`;
+        
+        // Update header time text
+        const timeHeaderEl = document.getElementById('timeNowText');
+        if (timeHeaderEl) timeHeaderEl.textContent = currentMinuteStr;
+
+        // Check if minute rolled over
+        if (currentMinuteStr !== lastCheckedMinute) {
+          lastCheckedMinute = currentMinuteStr;
+          checkDateRollover();
+          updateNextReminderCard();
+
+          // Check scheduled reminders
+          if (appState.remindersEnabled) {
+            const match = (appState.reminders || []).find(r => r.active && r.time === currentMinuteStr);
+            if (match) {
+              triggerReminderAlert(match);
+            }
+          }
+
+          // Check snoozed reminders
+          if (appState.snoozedReminders && appState.snoozedReminders.length > 0) {
+            const currentMs = Date.now();
+            const due = appState.snoozedReminders.filter(s => currentMs >= s.targetTime);
+            if (due.length > 0) {
+              appState.snoozedReminders = appState.snoozedReminders.filter(s => currentMs < s.targetTime);
+              saveState();
+              triggerReminderAlert(due[0]);
+            }
+          }
+        }
+      }, 1000);
+    }
+
+    /* ----------------------------------------------------
+       Urine Scale Color Inspection & Catch-Up Actions
+    ---------------------------------------------------- */
+    const urineScaleData = {
+      1: {
+        level: 1,
+        title: 'Clear / Very Pale Straw',
+        colorHex: '#f8fafc',
+        badge: 'Optimal Dilution',
+        badgeClass: 'bg-emerald-100 text-emerald-800 border-emerald-200',
+        cardBorder: 'border-emerald-200 bg-emerald-50/40',
+        advice: 'Outstanding hydration. Specific gravity is optimally low (< 1.010). Kidney stone crystals cannot easily aggregate or nucleate in this dilute environment.',
+        catchUpMl: 0
+      },
+      2: {
+        level: 2,
+        title: 'Pale Yellow',
+        colorHex: '#fef08a',
+        badge: 'Normal / Healthy',
+        badgeClass: 'bg-emerald-100 text-emerald-800 border-emerald-200',
+        cardBorder: 'border-emerald-200 bg-emerald-50/40',
+        advice: 'Healthy baseline dilution. You are well-hydrated with low crystallization risk. Keep sipping fluids according to your scheduled timeline.',
+        catchUpMl: 0
+      },
+      3: {
+        level: 3,
+        title: 'Bright / Lemon Yellow',
+        colorHex: '#facc15',
+        badge: 'Mild Dehydration',
+        badgeClass: 'bg-amber-100 text-amber-800 border-amber-200',
+        cardBorder: 'border-amber-200 bg-amber-50/40',
+        advice: 'Urine concentration is beginning to increase. Solutes (calcium, oxalate, uric acid) are becoming concentrated. Drink 1 glass of water now.',
+        catchUpMl: 250
+      },
+      4: {
+        level: 4,
+        title: 'Dark Yellow / Amber',
+        colorHex: '#d97706',
+        badge: 'Moderate Dehydration — High Stone Risk',
+        badgeClass: 'bg-orange-100 text-orange-800 border-orange-200',
+        cardBorder: 'border-orange-300 bg-orange-50/50',
+        advice: 'Warning: Significant urinary supersaturation. Stone-forming mineral crystals can precipitate rapidly at this concentration. Catch-up water needed immediately!',
+        catchUpMl: 500
+      },
+      5: {
+        level: 5,
+        title: 'Honey / Brown Amber',
+        colorHex: '#78350f',
+        badge: 'Severe Dehydration — Critical Risk',
+        badgeClass: 'bg-rose-100 text-rose-800 border-rose-200',
+        cardBorder: 'border-rose-300 bg-rose-50/50',
+        advice: 'Critical Warning: Urine is deeply concentrated. Risk of crystal adhesion and gravel formation is very high. Drink 750 ml water immediately. If accompanied by severe flank pain or blood in urine, seek medical evaluation.',
+        catchUpMl: 750
+      }
+    };
+
+    function getUrineHex(lvl) {
+      return urineScaleData[lvl] ? urineScaleData[lvl].colorHex : '#fef08a';
+    }
+
+    function selectUrineLevel(lvl) {
+      const data = urineScaleData[lvl];
+      if (!data) return;
+
+      const container = document.getElementById('urineFeedbackContainer');
+      container.className = `rounded-3xl p-5 shadow-sm border transition-all space-y-3 ${data.cardBorder}`;
+      container.classList.remove('hidden');
+
+      let catchUpButtonHtml = '';
+      if (data.catchUpMl > 0) {
+        catchUpButtonHtml = `
+          <div class="pt-2">
+            <button onclick="catchUpWater(${data.catchUpMl})" class="w-full py-2.5 bg-brand-600 hover:bg-brand-500 text-white rounded-xl text-xs font-bold transition-all shadow-sm flex items-center justify-center space-x-1.5 active:scale-95">
+              <span>💧 Drink 1-Tap Catch-up Water (+${data.catchUpMl} ml)</span>
+            </button>
+          </div>
+        `;
+      }
+
+      container.innerHTML = `
+        <div class="flex items-start justify-between">
+          <div class="flex items-center space-x-2.5">
+            <div class="w-6 h-6 rounded-full border border-slate-300 shadow-inner" style="background-color: ${data.colorHex};"></div>
+            <div>
+              <h4 class="text-xs font-black text-slate-900">Level ${data.level}: ${data.title}</h4>
+              <span class="inline-block mt-0.5 px-2 py-0.5 rounded text-[10px] font-bold border ${data.badgeClass}">${data.badge}</span>
+            </div>
+          </div>
+          <button onclick="logUrineCheck(${data.level}, '${data.title}')" class="px-3 py-1 bg-slate-900 hover:bg-slate-800 text-white rounded-lg text-xs font-bold transition-all shadow-xs">
+            Save Log
+          </button>
+        </div>
+        
+        <p class="text-xs text-slate-700 leading-relaxed">${data.advice}</p>
+        ${catchUpButtonHtml}
+      `;
+    }
+
+    function catchUpWater(amount) {
+      logBeverage('Catch-up Rehydration', amount, 'water');
+      showToast(`+${amount} ml Catch-up Water Logged!`, '💧');
+    }
+
+    function logUrineCheck(level, label) {
+      const now = new Date();
+      const timeStr = now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+
+      appState.urineChecks = appState.urineChecks || [];
+      appState.urineChecks.push({
+        id: 'urine-' + Date.now(),
+        level,
+        label,
+        timestamp: timeStr
+      });
+
+      saveState();
+      renderUrineScale();
+      showToast(`Level ${level} color recorded`, '🧪');
+    }
+
+    function deleteUrineCheck(id) {
+      appState.urineChecks = (appState.urineChecks || []).filter(c => c.id !== id);
+      saveState();
+      renderUrineScale();
+      showToast('Color check removed', '🗑️');
+    }
+
+    /* ----------------------------------------------------
+       Clinical Settings Handlers
+    ---------------------------------------------------- */
+    function updateBaseGoal(newGoal) {
+      appState.baseGoal = parseInt(newGoal);
+      saveState();
+      renderDashboard();
+      showToast(`Target goal updated to ${newGoal.toLocaleString()} ml`, '🎯');
+    }
+
+    function saveDoctorLimit() {
+      const input = document.getElementById('doctorLimitInput');
+      const val = parseInt(input.value);
+      if (val && val >= 500 && val <= 6000) {
+        appState.doctorLimit = val;
+        showToast(`Doctor prescribed limit saved: ${val} ml`, '🩺');
+      } else {
+        appState.doctorLimit = null;
+        input.value = '';
+        showToast('Prescribed limit cleared (using standard target)', 'ℹ️');
+      }
+      saveState();
+      renderDashboard();
+    }
+
+    /* ----------------------------------------------------
+       Reset & Data Management
+    ---------------------------------------------------- */
+    function openResetModal() {
+      document.getElementById('resetModal').classList.remove('hidden');
+    }
+
+    function closeResetModal() {
+      document.getElementById('resetModal').classList.add('hidden');
+    }
+
+    function confirmResetToday() {
+      appState.currentIntake = 0;
+      appState.drinksLog = [];
+      appState.urineChecks = [];
+      appState.hotDayActive = false;
+      appState.workoutActive = false;
+      saveState();
+      renderAll();
+      closeResetModal();
+      showToast("Today's intake and log cleared", '🔄');
+    }
+
+    function exportDataJson() {
+      const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(appState, null, 2));
+      const downloadAnchor = document.createElement('a');
+      downloadAnchor.setAttribute("href", dataStr);
+      downloadAnchor.setAttribute("download", `hydrostone_backup_${getTodayDateString()}.json`);
+      document.body.appendChild(downloadAnchor);
+      downloadAnchor.click();
+      downloadAnchor.remove();
+      showToast('Data exported successfully', '📁');
+    }
+
+    /* ----------------------------------------------------
+       Tab Navigation System
+    ---------------------------------------------------- */
+    function switchTab(tabId) {
+      // Hide all contents
+      document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
+      // Show selected
+      const target = document.getElementById(`tab-${tabId}`);
+      if (target) target.classList.remove('hidden');
+
+      // Update Nav Buttons
+      document.querySelectorAll('.nav-item').forEach(btn => {
+        btn.classList.remove('text-brand-600', 'font-bold');
+        btn.classList.add('text-slate-400', 'font-semibold');
+      });
+
+      const activeBtn = document.getElementById(`nav-btn-${tabId}`);
+      if (activeBtn) {
+        activeBtn.classList.add('text-brand-600', 'font-bold');
+        activeBtn.classList.remove('text-slate-400', 'font-semibold');
+      }
+
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    /* ----------------------------------------------------
+       Header Clinical Pace Banner Updater
+    ---------------------------------------------------- */
+    function updateClinicalPaceBanner() {
+      const now = new Date();
+      const currentHours = now.getHours();
+      const intake = appState.currentIntake;
+      const goal = getEffectiveGoal();
+
+      const banner = document.getElementById('clinicalStatusBanner');
+      const pulse = document.getElementById('statusPulse');
+      const dot = document.getElementById('statusDot');
+      const text = document.getElementById('statusText');
+
+      // Expected intake pace based on hour of day (assuming 7am - 9pm active hours)
+      const activeHour = Math.max(0, Math.min(14, currentHours - 7));
+      const expectedIntake = Math.round((activeHour / 14) * goal * 0.75);
+
+      if (intake >= goal) {
+        banner.className = 'mt-2.5 flex items-center justify-between rounded-xl px-3 py-1.5 text-xs font-medium bg-emerald-50 text-emerald-800 border border-emerald-200 transition-all';
+        pulse.className = 'animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75';
+        dot.className = 'relative inline-flex rounded-full h-2 w-2 bg-emerald-500';
+        text.textContent = 'Daily clinical goal achieved! Excellent dilution';
+      } else if (intake >= expectedIntake) {
+        banner.className = 'mt-2.5 flex items-center justify-between rounded-xl px-3 py-1.5 text-xs font-medium bg-brand-50 text-brand-800 border border-brand-200 transition-all';
+        pulse.className = 'animate-ping absolute inline-flex h-full w-full rounded-full bg-brand-400 opacity-75';
+        dot.className = 'relative inline-flex rounded-full h-2 w-2 bg-brand-500';
+        text.textContent = 'Pacing well: Urine dilution maintained';
+      } else {
+        banner.className = 'mt-2.5 flex items-center justify-between rounded-xl px-3 py-1.5 text-xs font-medium bg-amber-50 text-amber-800 border border-amber-200 transition-all';
+        pulse.className = 'animate-ping absolute inline-flex h-full w-full rounded-full bg-amber-400 opacity-75';
+        dot.className = 'relative inline-flex rounded-full h-2 w-2 bg-amber-500';
+        text.textContent = 'Hydration lagging: Drink 1 glass to avoid supersaturation';
+      }
+    }
+
+    /* ----------------------------------------------------
+       Toast System
+    ---------------------------------------------------- */
+    let toastTimeout = null;
+    function showToast(message, icon = '💧') {
+      const toast = document.getElementById('toastNotification');
+      const msgEl = document.getElementById('toastMessage');
+      const iconEl = document.getElementById('toastIcon');
+
+      msgEl.textContent = message;
+      iconEl.textContent = icon;
+
+      toast.classList.remove('opacity-0', '-translate-y-12');
+      toast.classList.add('opacity-100', 'translate-y-0');
+
+      if (toastTimeout) clearTimeout(toastTimeout);
+      toastTimeout = setTimeout(() => {
+        toast.classList.add('opacity-0', '-translate-y-12');
+        toast.classList.remove('opacity-100', 'translate-y-0');
+      }, 2600);
+    }
+
+    function escapeHtml(str) {
+      if (!str) return '';
+      return String(str)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#039;');
+    }
+  </script>
 </body>
 </html>
