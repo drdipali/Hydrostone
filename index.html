@@ -376,33 +376,95 @@
             </label>
           </div>
 
-          <!-- Audio & Push Toggles -->
-          <div class="grid grid-cols-2 gap-2.5 pt-2 border-t border-slate-100">
+          <!-- Alert Mode Toggles (Audio Chime, Voice Alert, Push Alert) -->
+          <div class="grid grid-cols-3 gap-2 pt-2 border-t border-slate-100">
             <!-- Web Audio API Chime -->
-            <div class="flex items-center justify-between p-2.5 rounded-xl bg-slate-50 border border-slate-200/70">
-              <div class="flex items-center space-x-2">
+            <div class="flex flex-col justify-between p-2.5 rounded-xl bg-slate-50 border border-slate-200/70">
+              <div class="flex items-center justify-between mb-1.5">
                 <span class="text-base">🔔</span>
-                <span class="text-xs font-semibold text-slate-700">Audio Chime</span>
+                <input type="checkbox" id="audioChimeToggle" class="h-4 w-4 rounded text-brand-600 focus:ring-brand-500 border-slate-300 cursor-pointer" checked>
               </div>
-              <input type="checkbox" id="audioChimeToggle" class="h-4 w-4 rounded text-brand-600 focus:ring-brand-500 border-slate-300" checked>
+              <span class="text-[11px] font-bold text-slate-700">Audio Chime</span>
+            </div>
+
+            <!-- Voice Alert (Text-to-Speech) -->
+            <div class="flex flex-col justify-between p-2.5 rounded-xl bg-slate-50 border border-slate-200/70">
+              <div class="flex items-center justify-between mb-1.5">
+                <span class="text-base">🗣️</span>
+                <input type="checkbox" id="voiceAlertToggle" class="h-4 w-4 rounded text-brand-600 focus:ring-brand-500 border-slate-300 cursor-pointer" checked>
+              </div>
+              <span class="text-[11px] font-bold text-slate-700">Voice Alert</span>
             </div>
 
             <!-- Browser Push Notification -->
-            <div class="flex items-center justify-between p-2.5 rounded-xl bg-slate-50 border border-slate-200/70">
-              <div class="flex items-center space-x-2">
+            <div class="flex flex-col justify-between p-2.5 rounded-xl bg-slate-50 border border-slate-200/70">
+              <div class="flex items-center justify-between mb-1.5">
                 <span class="text-base">📲</span>
-                <span class="text-xs font-semibold text-slate-700">Push Alert</span>
+                <input type="checkbox" id="browserPushToggle" class="h-4 w-4 rounded text-brand-600 focus:ring-brand-500 border-slate-300 cursor-pointer">
               </div>
-              <input type="checkbox" id="browserPushToggle" class="h-4 w-4 rounded text-brand-600 focus:ring-brand-500 border-slate-300">
+              <span class="text-[11px] font-bold text-slate-700">Push Alert</span>
+            </div>
+          </div>
+
+          <!-- Alert Sound Picker & Volume Controls -->
+          <div class="space-y-3 pt-3 border-t border-slate-100">
+            <!-- Sound Tone Picker -->
+            <div>
+              <div class="flex items-center justify-between mb-1.5">
+                <label class="text-xs font-bold text-slate-700">Alert Sound Tone</label>
+                <span id="soundPickerActiveLabel" class="text-[11px] font-semibold text-brand-600">Loud Bell</span>
+              </div>
+              <div class="grid grid-cols-3 gap-2">
+                <button type="button" onclick="selectAlertSound('bell')" id="soundOption-bell" class="sound-option-btn py-2 px-1 text-center rounded-xl border text-xs font-bold transition-all border-brand-500 bg-brand-50 text-brand-700 shadow-xs ring-1 ring-brand-400">
+                  🔔 Loud Bell
+                </button>
+                <button type="button" onclick="selectAlertSound('water')" id="soundOption-water" class="sound-option-btn py-2 px-1 text-center rounded-xl border text-xs font-semibold transition-all border-slate-200 bg-slate-50 text-slate-600 hover:bg-slate-100">
+                  💧 Water Drop
+                </button>
+                <button type="button" onclick="selectAlertSound('beep')" id="soundOption-beep" class="sound-option-btn py-2 px-1 text-center rounded-xl border text-xs font-semibold transition-all border-slate-200 bg-slate-50 text-slate-600 hover:bg-slate-100">
+                  📟 Double Beep
+                </button>
+              </div>
+            </div>
+
+            <!-- Volume Slider (0% - 100%) -->
+            <div>
+              <div class="flex items-center justify-between mb-1">
+                <div class="flex items-center space-x-1.5">
+                  <span id="volumeIcon" class="text-sm">🔊</span>
+                  <label for="alertVolumeSlider" class="text-xs font-bold text-slate-700">Notification Volume</label>
+                </div>
+                <span id="volumePercentDisplay" class="text-xs font-mono font-bold text-brand-600">85%</span>
+              </div>
+              <input type="range" id="alertVolumeSlider" min="0" max="100" value="85" class="w-full h-2 bg-slate-200 rounded-lg appearance-none cursor-pointer accent-brand-600">
+              <div class="flex justify-between text-[10px] text-slate-400 font-medium px-0.5 mt-0.5">
+                <span>0% (Mute)</span>
+                <span>50%</span>
+                <span>100% (Max Loud)</span>
+              </div>
+            </div>
+
+            <!-- Custom Alert Message -->
+            <div>
+              <div class="flex items-center justify-between mb-1">
+                <label for="customAlertMessageInput" class="text-xs font-bold text-slate-700">Custom Alert Message (Popup & Voice)</label>
+                <span class="text-[10px] text-slate-400">Editable</span>
+              </div>
+              <div class="relative">
+                <input type="text" id="customAlertMessageInput" value="Time to drink water. Please have {amount} ml now." class="w-full px-3 py-2 text-xs rounded-xl border border-slate-300 focus:outline-none focus:ring-2 focus:ring-brand-500 font-medium text-slate-800">
+              </div>
+              <p class="text-[10px] text-slate-500 mt-1">
+                Use <code class="bg-slate-100 text-brand-700 px-1 py-0.5 rounded font-mono font-bold">{amount}</code> for target ml, and <code class="bg-slate-100 text-brand-700 px-1 py-0.5 rounded font-mono font-bold">{label}</code> for reminder title.
+              </p>
             </div>
           </div>
 
           <!-- Test Reminder Button -->
-          <button id="testReminderNowDirectBtn" class="w-full py-2.5 bg-slate-900 hover:bg-slate-800 text-white rounded-xl text-xs font-bold transition-all flex items-center justify-center space-x-2 active:scale-98 shadow-sm">
+          <button id="testReminderNowDirectBtn" class="w-full py-3 bg-slate-900 hover:bg-slate-800 text-white rounded-2xl text-xs font-bold transition-all flex items-center justify-center space-x-2 active:scale-98 shadow-sm">
             <svg class="w-4 h-4 text-brand-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"/>
             </svg>
-            <span>Test Reminder Popup Now</span>
+            <span>Test Reminder Popup & Chime Now</span>
           </button>
         </div>
 
@@ -849,7 +911,16 @@
         <h3 id="modalReminderTitle" class="text-lg font-extrabold text-slate-900">Afternoon Flush</h3>
         <p id="modalReminderDesc" class="text-xs text-slate-500 mt-1">Recommended target: <span class="font-bold text-slate-800" id="modalReminderAmount">350</span> ml water</p>
         
-        <div class="my-4 p-3 rounded-2xl bg-slate-50 text-[11px] text-slate-600 border border-slate-200/80 text-left">
+        <!-- Custom Spoken & Display Alert Message Card -->
+        <div id="modalSpokenCard" class="my-3.5 p-3 rounded-2xl bg-brand-50 text-left border border-brand-200/80 flex items-start space-x-2.5">
+          <span class="text-lg shrink-0">🗣️</span>
+          <div>
+            <div class="text-[10px] font-bold uppercase tracking-wider text-brand-700">Alert Message</div>
+            <p id="modalSpokenMessageText" class="text-xs font-bold text-brand-950 mt-0.5 leading-snug">Time to drink water. Please have 350 ml now.</p>
+          </div>
+        </div>
+
+        <div class="mb-4 p-2.5 rounded-xl bg-slate-50 text-[11px] text-slate-600 border border-slate-200/80 text-left">
           💡 <strong class="text-slate-800">Clinical Reminder:</strong> Drinking fluids steadily across the day prevents urine supersaturation and stops microscopic stones from aggregating.
         </div>
 
@@ -993,6 +1064,10 @@
       // Reminder Settings
       remindersEnabled: true,
       audioChimeEnabled: true,
+      alertVolume: 85, // 0% - 100%
+      alertSound: 'bell', // 'bell' | 'water' | 'beep'
+      voiceAlertEnabled: true,
+      customAlertMessage: 'Time to drink water. Please have {amount} ml now.',
       pushNotificationsEnabled: false,
       wakeTime: '07:00',
       bedTime: '21:00',
@@ -1100,7 +1175,12 @@
       // Reminders Toggle Checks
       document.getElementById('masterReminderToggle').checked = appState.remindersEnabled;
       document.getElementById('audioChimeToggle').checked = appState.audioChimeEnabled;
+      document.getElementById('voiceAlertToggle').checked = appState.voiceAlertEnabled ?? true;
       document.getElementById('browserPushToggle').checked = appState.pushNotificationsEnabled;
+      document.getElementById('alertVolumeSlider').value = appState.alertVolume ?? 85;
+      updateVolumeUI(appState.alertVolume ?? 85);
+      updateSoundPickerUI();
+      document.getElementById('customAlertMessageInput').value = appState.customAlertMessage || 'Time to drink water. Please have {amount} ml now.';
 
       // Settings Inputs
       if (appState.doctorLimit) {
@@ -1115,20 +1195,62 @@
     }
 
     function setupEventListeners() {
-      // Audio chime quick test
+      // Audio chime & voice quick test from header
       document.getElementById('quickTestChimeBtn').addEventListener('click', () => {
-        playWebAudioChime();
-        showToast('🔔 Chime preview played', '💧');
+        playAlertSound();
+        const testMsg = getFormattedAlertMessage({ label: 'Hydration Check', amount: 250 });
+        speakVoiceAlert(testMsg);
+        showToast('🔔 Chime & voice preview played', '💧');
       });
 
       // Test Alert card button
       document.getElementById('testAlertNowBtn').addEventListener('click', () => {
-        triggerReminderAlert({ label: 'Test Hydration Flush', amount: 300 });
+        triggerReminderAlert({ label: 'Scheduled Hydration', amount: 350 });
       });
 
-      // Reminders Tab Test Button
+      // Reminders Tab Test Button (plays sound at chosen volume and speaks voice alert)
       document.getElementById('testReminderNowDirectBtn').addEventListener('click', () => {
-        triggerReminderAlert({ label: 'Test Scheduled Reminder', amount: 350 });
+        triggerReminderAlert({ label: 'Scheduled Hydration', amount: 350 });
+      });
+
+      // Voice Alert Toggle
+      document.getElementById('voiceAlertToggle').addEventListener('change', (e) => {
+        appState.voiceAlertEnabled = e.target.checked;
+        saveState();
+        if (appState.voiceAlertEnabled) {
+          speakVoiceAlert('Voice reminders enabled.');
+          showToast('Voice reminders enabled', '🗣️');
+        } else {
+          showToast('Voice reminders disabled', '🔇');
+        }
+      });
+
+      // Volume Slider
+      const volSlider = document.getElementById('alertVolumeSlider');
+      volSlider.addEventListener('input', (e) => {
+        const val = parseInt(e.target.value);
+        appState.alertVolume = val;
+        updateVolumeUI(val);
+      });
+      volSlider.addEventListener('change', (e) => {
+        const val = parseInt(e.target.value);
+        appState.alertVolume = val;
+        saveState();
+        updateVolumeUI(val);
+        playAlertSound(); // Instant loudness feedback on release
+      });
+
+      // Custom Alert Message input
+      const msgInput = document.getElementById('customAlertMessageInput');
+      msgInput.addEventListener('input', (e) => {
+        appState.customAlertMessage = e.target.value;
+        saveState();
+      });
+      msgInput.addEventListener('change', (e) => {
+        appState.customAlertMessage = e.target.value.trim() || 'Time to drink water. Please have {amount} ml now.';
+        e.target.value = appState.customAlertMessage;
+        saveState();
+        showToast('Custom alert message saved', '💾');
       });
 
       // Hot Day & Workout Toggles
@@ -1658,25 +1780,86 @@
     }
 
     /* ----------------------------------------------------
+       Alert Sound Tone & Volume Helpers
+    ---------------------------------------------------- */
+    function updateVolumeUI(val) {
+      const volDisplay = document.getElementById('volumePercentDisplay');
+      const volIcon = document.getElementById('volumeIcon');
+      if (volDisplay) volDisplay.textContent = `${val}%`;
+      if (volIcon) {
+        if (val == 0) volIcon.textContent = '🔇';
+        else if (val < 40) volIcon.textContent = '🔈';
+        else if (val < 75) volIcon.textContent = '🔉';
+        else volIcon.textContent = '🔊';
+      }
+    }
+
+    function selectAlertSound(soundType) {
+      appState.alertSound = soundType;
+      saveState();
+      updateSoundPickerUI();
+      playAlertSound(soundType);
+      showToast(`Tone set to: ${getSoundLabel(soundType)}`, '🔔');
+    }
+
+    function getSoundLabel(soundType) {
+      if (soundType === 'water') return 'Water Drop';
+      if (soundType === 'beep') return 'Double Beep';
+      return 'Loud Bell';
+    }
+
+    function updateSoundPickerUI() {
+      const current = appState.alertSound || 'bell';
+      document.querySelectorAll('.sound-option-btn').forEach(btn => {
+        btn.className = 'sound-option-btn py-2 px-1 text-center rounded-xl border text-xs font-semibold transition-all border-slate-200 bg-slate-50 text-slate-600 hover:bg-slate-100';
+      });
+      const activeBtn = document.getElementById(`soundOption-${current}`);
+      if (activeBtn) {
+        activeBtn.className = 'sound-option-btn py-2 px-1 text-center rounded-xl border text-xs font-bold transition-all border-brand-500 bg-brand-50 text-brand-700 shadow-xs ring-1 ring-brand-400';
+      }
+      const labelEl = document.getElementById('soundPickerActiveLabel');
+      if (labelEl) labelEl.textContent = getSoundLabel(current);
+    }
+
+    function getFormattedAlertMessage(reminder) {
+      let template = appState.customAlertMessage;
+      if (!template || !template.trim()) {
+        template = 'Time to drink water. Please have {amount} ml now.';
+      }
+      const amount = reminder && reminder.amount ? reminder.amount : 250;
+      const label = reminder && reminder.label ? reminder.label : 'Hydration Reminder';
+      return template
+        .replace(/\{amount\}/gi, amount)
+        .replace(/\{label\}/gi, label);
+    }
+
+    /* ----------------------------------------------------
        In-App Popup Modal & Sound Chime Engine
     ---------------------------------------------------- */
     function triggerReminderAlert(reminder) {
       pendingModalReminder = reminder;
+      const formattedMsg = getFormattedAlertMessage(reminder);
+
       document.getElementById('modalReminderTitle').textContent = reminder.label;
       document.getElementById('modalReminderAmount').textContent = reminder.amount;
       document.getElementById('modalDrinkAmountBtnText').textContent = reminder.amount;
+      
+      const spokenMsgEl = document.getElementById('modalSpokenMessageText');
+      if (spokenMsgEl) spokenMsgEl.textContent = formattedMsg;
+
       document.getElementById('reminderModal').classList.remove('hidden');
 
-      // Audio chime
-      if (appState.audioChimeEnabled) {
-        playWebAudioChime();
-      }
+      // 1. Play loud alert sound with DynamicsCompressor and volume scaling
+      playAlertSound();
 
-      // Browser Push Notification (if granted)
+      // 2. Speak custom voice reminder out loud
+      speakVoiceAlert(formattedMsg);
+
+      // 3. Browser Push Notification (if granted)
       if (appState.pushNotificationsEnabled && 'Notification' in window && Notification.permission === 'granted') {
         try {
           new Notification('HydroStone Hydration Reminder', {
-            body: `Time for your ${reminder.label} (${reminder.amount} ml)! Maintain urine dilution.`,
+            body: formattedMsg,
             icon: 'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"%3E%3Cpath fill="%230284c7" d="M12 2.69l5.66 5.66a8 8 0 1 1-11.31 0z"/%3E%3C/svg%3E'
           });
         } catch (e) {
@@ -1703,8 +1886,13 @@
       showToast(`Reminder snoozed for ${minutes} minutes`, '⏰');
     }
 
-    /* Web Audio API Synthesizer (Pleasant two-tone bell chime) */
-    function playWebAudioChime() {
+    /* Web Audio API Engine with DynamicsCompressor & 3 Distinct Sound Options */
+    function playAlertSound(soundType) {
+      if (!appState.audioChimeEnabled) return;
+      const sound = soundType || appState.alertSound || 'bell';
+      const volumeFactor = Math.max(0, Math.min(100, appState.alertVolume ?? 85)) / 100;
+      if (volumeFactor <= 0) return;
+
       try {
         const AudioCtx = window.AudioContext || window.webkitAudioContext;
         if (!AudioCtx) return;
@@ -1715,31 +1903,161 @@
 
         const now = ctx.currentTime;
 
-        // Note 1: E5 (659.25 Hz)
-        const osc1 = ctx.createOscillator();
-        const gain1 = ctx.createGain();
-        osc1.type = 'sine';
-        osc1.frequency.setValueAtTime(659.25, now);
-        gain1.gain.setValueAtTime(0.2, now);
-        gain1.gain.exponentialRampToValueAtTime(0.001, now + 0.5);
-        osc1.connect(gain1);
-        gain1.connect(ctx.destination);
-        osc1.start(now);
-        osc1.stop(now + 0.5);
+        // Dynamics Compressor prevents clipping & distortion at high loudness
+        const compressor = ctx.createDynamicsCompressor();
+        compressor.threshold.setValueAtTime(-14, now);
+        compressor.knee.setValueAtTime(25, now);
+        compressor.ratio.setValueAtTime(12, now);
+        compressor.attack.setValueAtTime(0.003, now);
+        compressor.release.setValueAtTime(0.25, now);
 
-        // Note 2: A5 (880 Hz) harmonic
-        const osc2 = ctx.createOscillator();
-        const gain2 = ctx.createGain();
-        osc2.type = 'sine';
-        osc2.frequency.setValueAtTime(880, now + 0.15);
-        gain2.gain.setValueAtTime(0.25, now + 0.15);
-        gain2.gain.exponentialRampToValueAtTime(0.001, now + 0.85);
-        osc2.connect(gain2);
-        gain2.connect(ctx.destination);
-        osc2.start(now + 0.15);
-        osc2.stop(now + 0.85);
+        // Master Gain scaled by Volume Slider (reaching up to 0.85 at 100%)
+        const masterGain = ctx.createGain();
+        const effectivePeak = 0.85 * volumeFactor;
+        masterGain.gain.setValueAtTime(effectivePeak, now);
+
+        compressor.connect(masterGain);
+        masterGain.connect(ctx.destination);
+
+        if (sound === 'bell') {
+          // 3-Tone Resonant Harmonic Bell Chime (E5, G#5, B5)
+          const notes = [
+            { freq: 659.25, time: 0.00, dur: 0.70, amp: 0.80 },
+            { freq: 830.61, time: 0.16, dur: 0.80, amp: 0.85 },
+            { freq: 987.77, time: 0.32, dur: 1.05, amp: 0.90 }
+          ];
+
+          notes.forEach(note => {
+            const osc = ctx.createOscillator();
+            const noteGain = ctx.createGain();
+            osc.type = 'sine';
+            osc.frequency.setValueAtTime(note.freq, now + note.time);
+
+            // Harmonic overtone for shimmering bell presence
+            const overtone = ctx.createOscillator();
+            const overtoneGain = ctx.createGain();
+            overtone.type = 'triangle';
+            overtone.frequency.setValueAtTime(note.freq * 2, now + note.time);
+
+            noteGain.gain.setValueAtTime(0.001, now + note.time);
+            noteGain.gain.linearRampToValueAtTime(note.amp, now + note.time + 0.02);
+            noteGain.gain.exponentialRampToValueAtTime(0.001, now + note.time + note.dur);
+
+            overtoneGain.gain.setValueAtTime(0.001, now + note.time);
+            overtoneGain.gain.linearRampToValueAtTime(note.amp * 0.25, now + note.time + 0.015);
+            overtoneGain.gain.exponentialRampToValueAtTime(0.001, now + note.time + (note.dur * 0.6));
+
+            osc.connect(noteGain);
+            noteGain.connect(compressor);
+
+            overtone.connect(overtoneGain);
+            overtoneGain.connect(compressor);
+
+            osc.start(now + note.time);
+            osc.stop(now + note.time + note.dur + 0.05);
+
+            overtone.start(now + note.time);
+            overtone.stop(now + note.time + note.dur + 0.05);
+          });
+
+        } else if (sound === 'water') {
+          // Water Drop: Frequency glide + acoustic resonance
+          const osc1 = ctx.createOscillator();
+          const gain1 = ctx.createGain();
+          osc1.type = 'sine';
+          osc1.frequency.setValueAtTime(450, now);
+          osc1.frequency.exponentialRampToValueAtTime(1400, now + 0.09);
+          osc1.frequency.exponentialRampToValueAtTime(1100, now + 0.25);
+
+          gain1.gain.setValueAtTime(0.001, now);
+          gain1.gain.linearRampToValueAtTime(0.85, now + 0.04);
+          gain1.gain.exponentialRampToValueAtTime(0.001, now + 0.45);
+
+          osc1.connect(gain1);
+          gain1.connect(compressor);
+          osc1.start(now);
+          osc1.stop(now + 0.46);
+
+          // Secondary harmonic droplet
+          const osc2 = ctx.createOscillator();
+          const gain2 = ctx.createGain();
+          osc2.type = 'sine';
+          osc2.frequency.setValueAtTime(600, now + 0.18);
+          osc2.frequency.exponentialRampToValueAtTime(1600, now + 0.25);
+          osc2.frequency.exponentialRampToValueAtTime(1350, now + 0.45);
+
+          gain2.gain.setValueAtTime(0.001, now + 0.18);
+          gain2.gain.linearRampToValueAtTime(0.70, now + 0.22);
+          gain2.gain.exponentialRampToValueAtTime(0.001, now + 0.55);
+
+          osc2.connect(gain2);
+          gain2.connect(compressor);
+          osc2.start(now + 0.18);
+          osc2.stop(now + 0.56);
+
+        } else if (sound === 'beep') {
+          // Double Beep: Clear medical dual pulse
+          const beeps = [
+            { time: 0.00, dur: 0.14 },
+            { time: 0.20, dur: 0.16 }
+          ];
+
+          beeps.forEach(b => {
+            const osc = ctx.createOscillator();
+            const bGain = ctx.createGain();
+            osc.type = 'triangle';
+            osc.frequency.setValueAtTime(920, now + b.time);
+
+            bGain.gain.setValueAtTime(0.001, now + b.time);
+            bGain.gain.linearRampToValueAtTime(0.85, now + b.time + 0.015);
+            bGain.gain.setValueAtTime(0.85, now + b.time + b.dur - 0.02);
+            bGain.gain.linearRampToValueAtTime(0.001, now + b.time + b.dur);
+
+            osc.connect(bGain);
+            bGain.connect(compressor);
+
+            osc.start(now + b.time);
+            osc.stop(now + b.time + b.dur + 0.02);
+          });
+        }
       } catch (err) {
-        console.warn('Web Audio note failed:', err);
+        console.warn('Web Audio error:', err);
+      }
+    }
+
+    // Backwards-compatible aliases
+    function playChime() {
+      playAlertSound();
+    }
+    function playWebAudioChime() {
+      playAlertSound();
+    }
+
+    /* Spoken Voice Reminder (Text-to-Speech via window.speechSynthesis) */
+    function speakVoiceAlert(text) {
+      if (!appState.voiceAlertEnabled) return;
+      if (!('speechSynthesis' in window)) {
+        console.warn('SpeechSynthesis not supported');
+        return;
+      }
+
+      try {
+        window.speechSynthesis.cancel();
+        const utterance = new SpeechSynthesisUtterance(text);
+        const vol = (appState.alertVolume ?? 85) / 100;
+        utterance.volume = Math.max(0.1, Math.min(1.0, vol));
+        utterance.rate = 1.0;
+        utterance.pitch = 1.0;
+
+        const voices = window.speechSynthesis.getVoices();
+        if (voices && voices.length > 0) {
+          const preferred = voices.find(v => v.lang && v.lang.startsWith('en') && (v.name.includes('Natural') || v.name.includes('Google') || v.default)) || voices[0];
+          if (preferred) utterance.voice = preferred;
+        }
+
+        window.speechSynthesis.speak(utterance);
+      } catch (err) {
+        console.warn('Voice alert failed:', err);
       }
     }
 
