@@ -1,8 +1,8 @@
 <!DOCTYPE html>
-<html lang="en" class="h-full bg-slate-100">
+<html lang="en" class="min-h-screen bg-slate-100">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
   <title>HydroStone — Kidney Stone Hydration & Clinical Dilution Tracker</title>
   
   <!-- SEO & Web App Meta -->
@@ -64,17 +64,73 @@
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
 
   <style>
-    /* Custom Utilities & iOS Safe Area Support */
+    /* Mobile-First Base & Native Momentum Scrolling */
+    html {
+      -webkit-text-size-adjust: 100%;
+      scroll-behavior: smooth;
+    }
     body {
       font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
       -webkit-tap-highlight-color: transparent;
+      touch-action: manipulation;
     }
     .pb-safe {
-      padding-bottom: env(safe-area-inset-bottom, 1rem);
+      padding-bottom: max(0.65rem, env(safe-area-inset-bottom, 0px));
     }
     .pt-safe {
-      padding-top: env(safe-area-inset-top, 1rem);
+      padding-top: max(0.75rem, env(safe-area-inset-top, 0px));
     }
+    
+    /* Touch manipulation for smooth taps without 300ms delay */
+    button, input, select, textarea, a, .touch-manipulation {
+      touch-action: manipulation;
+    }
+
+    /* Prevent iOS Safari automatic zoom on form input focus (<16px triggers zoom) */
+    @media screen and (max-width: 768px) {
+      input[type="text"],
+      input[type="number"],
+      input[type="time"],
+      input[type="search"],
+      select,
+      textarea {
+        font-size: 16px !important;
+      }
+    }
+
+    /* Tactile thumb for notification volume slider on mobile touchscreens */
+    input[type="range"]::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      appearance: none;
+      width: 26px;
+      height: 26px;
+      border-radius: 50%;
+      background: #0284c7;
+      cursor: pointer;
+      border: 3px solid #ffffff;
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.25);
+      margin-top: -9px;
+    }
+    input[type="range"]::-moz-range-thumb {
+      width: 26px;
+      height: 26px;
+      border-radius: 50%;
+      background: #0284c7;
+      cursor: pointer;
+      border: 3px solid #ffffff;
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.25);
+    }
+    input[type="range"]::-webkit-slider-runnable-track {
+      height: 8px;
+      border-radius: 9999px;
+      background-color: #e2e8f0;
+    }
+    input[type="range"]::-moz-range-track {
+      height: 8px;
+      border-radius: 9999px;
+      background-color: #e2e8f0;
+    }
+
     /* Circular Progress Transition */
     .progress-circle {
       transition: stroke-dashoffset 0.8s cubic-bezier(0.4, 0, 0.2, 1);
@@ -89,13 +145,13 @@
     }
   </style>
 </head>
-<body class="h-full text-slate-800 antialiased selection:bg-brand-200">
+<body class="min-h-screen bg-slate-100 text-slate-800 antialiased selection:bg-brand-200 overflow-x-hidden">
 
-  <!-- Mobile-First Container Shell -->
-  <div class="mx-auto flex min-h-screen max-w-md flex-col bg-slate-50 shadow-2xl relative border-x border-slate-200/80">
+  <!-- Mobile-First Container Shell with Navigation Clearance Padding -->
+  <div class="mx-auto flex min-h-screen max-w-md flex-col bg-slate-50 shadow-2xl relative border-x border-slate-200/80 pb-28 sm:pb-32">
 
     <!-- Top App Bar / Header -->
-    <header class="sticky top-0 z-30 bg-white/95 backdrop-blur-md border-b border-slate-200/80 px-4 py-3 transition-shadow">
+    <header class="sticky top-0 z-30 pt-safe bg-white/95 backdrop-blur-md border-b border-slate-200/80 px-4 py-2.5 transition-shadow">
       <div class="flex items-center justify-between">
         <div class="flex items-center space-x-2.5">
           <div class="h-10 w-10 rounded-2xl bg-gradient-to-tr from-brand-600 to-cyan-400 p-0.5 shadow-md shadow-brand-500/20 flex items-center justify-center text-white">
@@ -142,8 +198,8 @@
       </div>
     </header>
 
-    <!-- Main Dynamic Tab Content Area -->
-    <main class="flex-1 px-4 py-4 space-y-5 overflow-y-auto">
+    <!-- Main Dynamic Tab Content Area (Native Momentum Page Scrolling) -->
+    <main class="flex-1 px-3.5 sm:px-4 py-3 sm:py-4 space-y-4 sm:space-y-5">
 
       <!-- ========================================== -->
       <!-- TAB 1: TODAY DASHBOARD                     -->
@@ -151,12 +207,12 @@
       <section id="tab-today" class="tab-content space-y-4">
 
         <!-- 1. Primary Intake Circular Progress Card -->
-        <div class="relative overflow-hidden rounded-3xl bg-white p-5 shadow-sm border border-slate-200/80 text-center">
+        <div class="relative overflow-hidden rounded-3xl bg-white p-4 sm:p-5 shadow-sm border border-slate-200/80 text-center">
           <div class="absolute -right-8 -top-8 w-32 h-32 bg-brand-100 rounded-full blur-2xl opacity-60 pointer-events-none"></div>
           <div class="absolute -left-8 -bottom-8 w-32 h-32 bg-cyan-100 rounded-full blur-2xl opacity-60 pointer-events-none"></div>
 
-          <!-- Circular SVG Progress -->
-          <div class="relative mx-auto flex items-center justify-center my-1" style="width: 220px; height: 220px;">
+          <!-- Circular SVG Progress (Responsive Fluid Container) -->
+          <div class="relative mx-auto flex items-center justify-center my-1 w-[195px] h-[195px] xs:w-[215px] xs:h-[215px] sm:w-[225px] sm:h-[225px] max-w-full">
             <svg class="w-full h-full transform -rotate-90" viewBox="0 0 200 200">
               <defs>
                 <linearGradient id="waterGradient" x1="0%" y1="0%" x2="100%" y2="100%">
@@ -244,7 +300,7 @@
               <div class="text-[11px] text-slate-500">Need a reminder in half an hour?</div>
             </div>
           </div>
-          <button onclick="addQuickReminder(30, 250, '30-Min Hydration Sip')" class="px-3 py-1.5 rounded-xl bg-brand-600 hover:bg-brand-500 text-white font-bold text-xs shadow-sm active:scale-95 transition-all flex items-center space-x-1">
+          <button onclick="addQuickReminder(30, 250, '30-Min Hydration Sip')" class="px-3.5 py-2 rounded-xl bg-brand-600 hover:bg-brand-500 text-white font-bold text-xs shadow-sm active:scale-95 transition-all flex items-center space-x-1 touch-manipulation min-h-[38px]">
             <span>+ In 30 Min</span>
           </button>
         </div>
@@ -257,7 +313,7 @@
           </div>
           <div class="grid grid-cols-2 gap-3">
             <!-- Hot Day Toggle -->
-            <button id="toggleHotDayBtn" type="button" class="flex items-center justify-between p-3 rounded-xl border border-slate-200 bg-slate-50 hover:bg-amber-50/50 transition-all text-left group">
+            <button id="toggleHotDayBtn" type="button" class="flex items-center justify-between p-3 rounded-xl border border-slate-200 bg-slate-50 hover:bg-amber-50/50 transition-all text-left group active:scale-95 touch-manipulation">
               <div class="flex items-center space-x-2.5">
                 <div class="text-xl">☀️</div>
                 <div>
@@ -271,7 +327,7 @@
             </button>
 
             <!-- Workout Toggle -->
-            <button id="toggleWorkoutBtn" type="button" class="flex items-center justify-between p-3 rounded-xl border border-slate-200 bg-slate-50 hover:bg-cyan-50/50 transition-all text-left group">
+            <button id="toggleWorkoutBtn" type="button" class="flex items-center justify-between p-3 rounded-xl border border-slate-200 bg-slate-50 hover:bg-cyan-50/50 transition-all text-left group active:scale-95 touch-manipulation">
               <div class="flex items-center space-x-2.5">
                 <div class="text-xl">🏃‍♂️</div>
                 <div>
@@ -290,14 +346,14 @@
         <div class="space-y-2.5">
           <div class="flex items-center justify-between">
             <h2 class="text-xs font-bold uppercase tracking-wider text-slate-500">Quick Log Beverage</h2>
-            <button id="customLogBtn" class="text-xs font-semibold text-brand-600 hover:text-brand-700 flex items-center space-x-0.5">
+            <button id="customLogBtn" class="text-xs font-semibold text-brand-600 hover:text-brand-700 flex items-center space-x-0.5 touch-manipulation py-1 px-2">
               <span>+ Custom ml</span>
             </button>
           </div>
 
-          <div class="grid grid-cols-2 gap-3">
+          <div class="grid grid-cols-2 gap-2.5 sm:gap-3">
             <!-- Plain Water (+250 ml) -->
-            <button onclick="logBeverage('Plain Water', 250, 'water')" class="relative flex flex-col items-start p-3.5 rounded-2xl bg-white border border-slate-200/90 hover:border-brand-300 hover:shadow-md active:scale-98 transition-all text-left group">
+            <button onclick="logBeverage('Plain Water', 250, 'water')" class="relative flex flex-col items-start p-3 sm:p-3.5 rounded-2xl bg-white border border-slate-200/90 hover:border-brand-300 hover:shadow-md active:scale-95 transition-all text-left group touch-manipulation">
               <div class="flex items-center justify-between w-full mb-1">
                 <span class="text-2xl group-hover:scale-110 transition-transform">💧</span>
                 <span class="text-xs font-extrabold text-brand-600 bg-brand-50 px-2 py-0.5 rounded-lg border border-brand-100">+250 ml</span>
@@ -307,7 +363,7 @@
             </button>
 
             <!-- Water Bottle (+500 ml) -->
-            <button onclick="logBeverage('Water Bottle', 500, 'bottle')" class="relative flex flex-col items-start p-3.5 rounded-2xl bg-white border border-slate-200/90 hover:border-brand-300 hover:shadow-md active:scale-98 transition-all text-left group">
+            <button onclick="logBeverage('Water Bottle', 500, 'bottle')" class="relative flex flex-col items-start p-3 sm:p-3.5 rounded-2xl bg-white border border-slate-200/90 hover:border-brand-300 hover:shadow-md active:scale-95 transition-all text-left group touch-manipulation">
               <div class="flex items-center justify-between w-full mb-1">
                 <span class="text-2xl group-hover:scale-110 transition-transform">🍶</span>
                 <span class="text-xs font-extrabold text-cyan-600 bg-cyan-50 px-2 py-0.5 rounded-lg border border-cyan-100">+500 ml</span>
@@ -317,7 +373,7 @@
             </button>
 
             <!-- Lemon Water / Citrate Boost (+250 ml) -->
-            <button onclick="logBeverage('Lemon Water', 250, 'citrate')" class="relative flex flex-col items-start p-3.5 rounded-2xl bg-gradient-to-b from-citrate-50/70 to-white border border-amber-200 hover:border-amber-300 hover:shadow-md active:scale-98 transition-all text-left group">
+            <button onclick="logBeverage('Lemon Water', 250, 'citrate')" class="relative flex flex-col items-start p-3 sm:p-3.5 rounded-2xl bg-gradient-to-b from-citrate-50/70 to-white border border-amber-200 hover:border-amber-300 hover:shadow-md active:scale-95 transition-all text-left group touch-manipulation">
               <div class="flex items-center justify-between w-full mb-1">
                 <span class="text-2xl group-hover:scale-110 transition-transform">🍋</span>
                 <span class="text-xs font-extrabold text-amber-700 bg-amber-100 px-2 py-0.5 rounded-lg border border-amber-200">+250 ml</span>
@@ -330,7 +386,7 @@
             </button>
 
             <!-- Soda / Strong Tea (+200 ml with gentle tip) -->
-            <button onclick="triggerSodaWarning()" class="relative flex flex-col items-start p-3.5 rounded-2xl bg-white border border-slate-200/90 hover:border-rose-200 hover:shadow-md active:scale-98 transition-all text-left group">
+            <button onclick="triggerSodaWarning()" class="relative flex flex-col items-start p-3 sm:p-3.5 rounded-2xl bg-white border border-slate-200/90 hover:border-rose-200 hover:shadow-md active:scale-95 transition-all text-left group touch-manipulation">
               <div class="flex items-center justify-between w-full mb-1">
                 <span class="text-2xl group-hover:scale-110 transition-transform">🥤</span>
                 <span class="text-xs font-extrabold text-slate-700 bg-slate-100 px-2 py-0.5 rounded-lg border border-slate-200">+200 ml</span>
@@ -438,7 +494,7 @@
             <p id="pushStatusDesc" class="text-[11px] text-slate-500 leading-relaxed">
               Tap the button below to test or request push notifications on your phone/browser.
             </p>
-            <button onclick="testPushNotificationDirect()" type="button" class="w-full py-2 px-3 bg-brand-50 hover:bg-brand-100 text-brand-700 font-bold text-xs rounded-xl border border-brand-200 transition-all flex items-center justify-center space-x-1.5 active:scale-98">
+            <button onclick="testPushNotificationDirect()" type="button" class="w-full min-h-[44px] py-2.5 px-3 bg-brand-50 hover:bg-brand-100 text-brand-700 font-bold text-xs rounded-xl border border-brand-200 transition-all flex items-center justify-center space-x-1.5 active:scale-95 touch-manipulation">
               <span>📲</span>
               <span>Send Test Push Notification Now</span>
             </button>
@@ -453,13 +509,13 @@
                 <span id="soundPickerActiveLabel" class="text-[11px] font-semibold text-brand-600">Loud Bell</span>
               </div>
               <div class="grid grid-cols-3 gap-2">
-                <button type="button" onclick="selectAlertSound('bell')" id="soundOption-bell" class="sound-option-btn py-2 px-1 text-center rounded-xl border text-xs font-bold transition-all border-brand-500 bg-brand-50 text-brand-700 shadow-xs ring-1 ring-brand-400">
+                <button type="button" onclick="selectAlertSound('bell')" id="soundOption-bell" class="sound-option-btn py-2.5 px-1 min-h-[44px] text-center rounded-xl border text-xs font-bold transition-all border-brand-500 bg-brand-50 text-brand-700 shadow-xs ring-1 ring-brand-400 touch-manipulation active:scale-95 flex items-center justify-center">
                   🔔 Loud Bell
                 </button>
-                <button type="button" onclick="selectAlertSound('water')" id="soundOption-water" class="sound-option-btn py-2 px-1 text-center rounded-xl border text-xs font-semibold transition-all border-slate-200 bg-slate-50 text-slate-600 hover:bg-slate-100">
+                <button type="button" onclick="selectAlertSound('water')" id="soundOption-water" class="sound-option-btn py-2.5 px-1 min-h-[44px] text-center rounded-xl border text-xs font-semibold transition-all border-slate-200 bg-slate-50 text-slate-600 hover:bg-slate-100 touch-manipulation active:scale-95 flex items-center justify-center">
                   💧 Water Drop
                 </button>
-                <button type="button" onclick="selectAlertSound('beep')" id="soundOption-beep" class="sound-option-btn py-2 px-1 text-center rounded-xl border text-xs font-semibold transition-all border-slate-200 bg-slate-50 text-slate-600 hover:bg-slate-100">
+                <button type="button" onclick="selectAlertSound('beep')" id="soundOption-beep" class="sound-option-btn py-2.5 px-1 min-h-[44px] text-center rounded-xl border text-xs font-semibold transition-all border-slate-200 bg-slate-50 text-slate-600 hover:bg-slate-100 touch-manipulation active:scale-95 flex items-center justify-center">
                   📟 Double Beep
                 </button>
               </div>
@@ -498,7 +554,7 @@
           </div>
 
           <!-- Test Reminder Button -->
-          <button id="testReminderNowDirectBtn" class="w-full py-3 bg-slate-900 hover:bg-slate-800 text-white rounded-2xl text-xs font-bold transition-all flex items-center justify-center space-x-2 active:scale-98 shadow-sm">
+          <button id="testReminderNowDirectBtn" class="w-full py-3.5 bg-slate-900 hover:bg-slate-800 text-white rounded-2xl text-xs sm:text-sm font-bold transition-all flex items-center justify-center space-x-2 active:scale-95 shadow-sm touch-manipulation min-h-[48px]">
             <svg class="w-4 h-4 text-brand-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"/>
             </svg>
@@ -518,17 +574,17 @@
           <p class="text-[11px] text-slate-500">Need a fluid reminder starting from right now? Tap to set:</p>
           <div class="grid grid-cols-3 gap-2">
             <!-- 30 Min Button (Primary emphasis) -->
-            <button onclick="addQuickReminder(30, 250, '30-Min Hydration Sip')" class="py-2.5 px-2 rounded-xl bg-brand-600 hover:bg-brand-500 text-white font-bold text-xs shadow-md shadow-brand-500/20 active:scale-95 transition-all text-center">
+            <button onclick="addQuickReminder(30, 250, '30-Min Hydration Sip')" class="py-2.5 px-2 rounded-xl bg-brand-600 hover:bg-brand-500 text-white font-bold text-xs shadow-md shadow-brand-500/20 active:scale-95 transition-all text-center min-h-[48px] touch-manipulation flex flex-col items-center justify-center">
               <span class="block text-sm">⏱️ In 30 Min</span>
               <span class="text-[10px] text-brand-100 font-normal">+250 ml water</span>
             </button>
             <!-- 45 Min Button -->
-            <button onclick="addQuickReminder(45, 300, '45-Min Hydration Sip')" class="py-2.5 px-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-800 font-bold text-xs border border-slate-200 active:scale-95 transition-all text-center">
+            <button onclick="addQuickReminder(45, 300, '45-Min Hydration Sip')" class="py-2.5 px-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-800 font-bold text-xs border border-slate-200 active:scale-95 transition-all text-center min-h-[48px] touch-manipulation flex flex-col items-center justify-center">
               <span class="block text-sm">⏱️ In 45 Min</span>
               <span class="text-[10px] text-slate-500 font-normal">+300 ml water</span>
             </button>
             <!-- 60 Min Button -->
-            <button onclick="addQuickReminder(60, 350, '60-Min Hydration Sip')" class="py-2.5 px-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-800 font-bold text-xs border border-slate-200 active:scale-95 transition-all text-center">
+            <button onclick="addQuickReminder(60, 350, '60-Min Hydration Sip')" class="py-2.5 px-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-800 font-bold text-xs border border-slate-200 active:scale-95 transition-all text-center min-h-[48px] touch-manipulation flex flex-col items-center justify-center">
               <span class="block text-sm">⏱️ In 60 Min</span>
               <span class="text-[10px] text-slate-500 font-normal">+350 ml water</span>
             </button>
@@ -540,19 +596,19 @@
           <div class="text-xs font-bold uppercase tracking-wider text-slate-500 mb-2.5">Auto Schedule Generator</div>
           <p class="text-[11px] text-slate-500 mb-3">Re-populate spaced hydration slots between wake (07:00) and bed (21:00):</p>
           <div class="grid grid-cols-2 gap-2">
-            <button onclick="generateSchedule(30)" class="px-2 py-2.5 text-center rounded-xl bg-brand-50 hover:bg-brand-100 text-brand-900 border border-brand-200 text-xs font-bold transition-all active:scale-95">
+            <button onclick="generateSchedule(30)" class="px-2 py-2.5 text-center rounded-xl bg-brand-50 hover:bg-brand-100 text-brand-900 border border-brand-200 text-xs font-bold transition-all active:scale-95 touch-manipulation min-h-[48px] flex flex-col items-center justify-center">
               Every 30 min
               <span class="block text-[10px] font-normal text-brand-600">28 slots • High Stone Risk</span>
             </button>
-            <button onclick="generateSchedule(60)" class="px-2 py-2.5 text-center rounded-xl bg-slate-100 hover:bg-brand-50 hover:text-brand-700 hover:border-brand-200 border border-slate-200 text-xs font-bold text-slate-700 transition-all active:scale-95">
+            <button onclick="generateSchedule(60)" class="px-2 py-2.5 text-center rounded-xl bg-slate-100 hover:bg-brand-50 hover:text-brand-700 hover:border-brand-200 border border-slate-200 text-xs font-bold text-slate-700 transition-all active:scale-95 touch-manipulation min-h-[48px] flex flex-col items-center justify-center">
               Every 1 hr
               <span class="block text-[10px] font-normal text-slate-500">14 slots • Standard</span>
             </button>
-            <button onclick="generateSchedule(90)" class="px-2 py-2.5 text-center rounded-xl bg-slate-100 hover:bg-brand-50 hover:text-brand-700 hover:border-brand-200 border border-slate-200 text-xs font-bold text-slate-700 transition-all active:scale-95">
+            <button onclick="generateSchedule(90)" class="px-2 py-2.5 text-center rounded-xl bg-slate-100 hover:bg-brand-50 hover:text-brand-700 hover:border-brand-200 border border-slate-200 text-xs font-bold text-slate-700 transition-all active:scale-95 touch-manipulation min-h-[48px] flex flex-col items-center justify-center">
               Every 90 min
               <span class="block text-[10px] font-normal text-slate-500">10 slots</span>
             </button>
-            <button onclick="generateSchedule(120)" class="px-2 py-2.5 text-center rounded-xl bg-slate-100 hover:bg-brand-50 hover:text-brand-700 hover:border-brand-200 border border-slate-200 text-xs font-bold text-slate-700 transition-all active:scale-95">
+            <button onclick="generateSchedule(120)" class="px-2 py-2.5 text-center rounded-xl bg-slate-100 hover:bg-brand-50 hover:text-brand-700 hover:border-brand-200 border border-slate-200 text-xs font-bold text-slate-700 transition-all active:scale-95 touch-manipulation min-h-[48px] flex flex-col items-center justify-center">
               Every 2 hrs
               <span class="block text-[10px] font-normal text-slate-500">8 slots</span>
             </button>
@@ -561,7 +617,7 @@
 
         <!-- Add Custom Reminder Form -->
         <div class="rounded-2xl bg-white p-4 shadow-sm border border-slate-200/80">
-          <button id="toggleAddReminderFormBtn" class="flex items-center justify-between w-full text-left text-xs font-bold uppercase tracking-wider text-slate-700">
+          <button id="toggleAddReminderFormBtn" class="flex items-center justify-between w-full text-left text-xs font-bold uppercase tracking-wider text-slate-700 py-1 touch-manipulation min-h-[40px]">
             <span class="flex items-center space-x-1.5">
               <span class="text-brand-600 text-base font-black">+</span>
               <span>Add Custom Reminder</span>
@@ -574,16 +630,16 @@
             <div>
               <span class="text-[11px] font-semibold text-slate-600 block mb-1">Quick Fill Time from Now:</span>
               <div class="flex items-center space-x-1.5 overflow-x-auto pb-1 no-scrollbar">
-                <button type="button" onclick="setCustomReminderOffset(30)" class="px-2.5 py-1 rounded-lg bg-brand-50 hover:bg-brand-100 text-brand-700 border border-brand-200 text-xs font-bold shrink-0">
+                <button type="button" onclick="setCustomReminderOffset(30)" class="px-3 py-1.5 rounded-lg bg-brand-50 hover:bg-brand-100 text-brand-700 border border-brand-200 text-xs font-bold shrink-0 touch-manipulation active:scale-95">
                   +30m from now
                 </button>
-                <button type="button" onclick="setCustomReminderOffset(45)" class="px-2.5 py-1 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-700 border border-slate-200 text-xs font-semibold shrink-0">
+                <button type="button" onclick="setCustomReminderOffset(45)" class="px-3 py-1.5 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-700 border border-slate-200 text-xs font-semibold shrink-0 touch-manipulation active:scale-95">
                   +45m
                 </button>
-                <button type="button" onclick="setCustomReminderOffset(60)" class="px-2.5 py-1 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-700 border border-slate-200 text-xs font-semibold shrink-0">
+                <button type="button" onclick="setCustomReminderOffset(60)" class="px-3 py-1.5 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-700 border border-slate-200 text-xs font-semibold shrink-0 touch-manipulation active:scale-95">
                   +1 hr
                 </button>
-                <button type="button" onclick="setCustomReminderOffset(120)" class="px-2.5 py-1 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-700 border border-slate-200 text-xs font-semibold shrink-0">
+                <button type="button" onclick="setCustomReminderOffset(120)" class="px-3 py-1.5 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-700 border border-slate-200 text-xs font-semibold shrink-0 touch-manipulation active:scale-95">
                   +2 hrs
                 </button>
               </div>
@@ -606,7 +662,7 @@
               <label class="block text-[11px] font-semibold text-slate-600 mb-1">Label / Clinical Note</label>
               <input type="text" id="newReminderLabel" placeholder="e.g. 30-Min Hydration Sip" required class="w-full px-3 py-2 text-xs rounded-xl border border-slate-300 focus:outline-none focus:ring-2 focus:ring-brand-500">
             </div>
-            <button type="submit" class="w-full py-2.5 bg-brand-600 hover:bg-brand-700 text-white rounded-xl text-xs font-bold transition-all shadow-sm">
+            <button type="submit" class="w-full py-3 bg-brand-600 hover:bg-brand-700 text-white rounded-xl text-xs sm:text-sm font-bold transition-all shadow-sm touch-manipulation active:scale-95 min-h-[44px]">
               Add to Schedule
             </button>
           </form>
@@ -651,9 +707,9 @@
 
           <div class="space-y-2" id="urineScaleButtons">
             <!-- Level 1: Clear / Very Pale Straw -->
-            <button onclick="selectUrineLevel(1)" data-level="1" class="urine-card w-full flex items-center justify-between p-3 rounded-2xl border-2 border-slate-200 hover:border-brand-400 bg-white transition-all text-left group">
+            <button onclick="selectUrineLevel(1)" data-level="1" class="urine-card w-full flex items-center justify-between p-3.5 rounded-2xl border-2 border-slate-200 hover:border-brand-400 bg-white transition-all text-left group touch-manipulation active:scale-98">
               <div class="flex items-center space-x-3">
-                <div class="w-8 h-12 rounded-lg border border-slate-300 shadow-inner flex items-center justify-center font-bold text-xs" style="background-color: #f8fafc; border-color: #cbd5e1;">
+                <div class="w-8 h-12 rounded-lg border border-slate-300 shadow-inner flex items-center justify-center font-bold text-xs shrink-0" style="background-color: #f8fafc; border-color: #cbd5e1;">
                   💧
                 </div>
                 <div>
@@ -668,9 +724,9 @@
             </button>
 
             <!-- Level 2: Pale Yellow -->
-            <button onclick="selectUrineLevel(2)" data-level="2" class="urine-card w-full flex items-center justify-between p-3 rounded-2xl border-2 border-slate-200 hover:border-brand-400 bg-white transition-all text-left group">
+            <button onclick="selectUrineLevel(2)" data-level="2" class="urine-card w-full flex items-center justify-between p-3.5 rounded-2xl border-2 border-slate-200 hover:border-brand-400 bg-white transition-all text-left group touch-manipulation active:scale-98">
               <div class="flex items-center space-x-3">
-                <div class="w-8 h-12 rounded-lg border border-amber-200 shadow-inner" style="background-color: #fef08a;"></div>
+                <div class="w-8 h-12 rounded-lg border border-amber-200 shadow-inner shrink-0" style="background-color: #fef08a;"></div>
                 <div>
                   <div class="flex items-center space-x-1.5">
                     <span class="text-xs font-bold text-slate-900">Level 2: Pale Yellow</span>
@@ -683,9 +739,9 @@
             </button>
 
             <!-- Level 3: Bright / Lemon Yellow -->
-            <button onclick="selectUrineLevel(3)" data-level="3" class="urine-card w-full flex items-center justify-between p-3 rounded-2xl border-2 border-slate-200 hover:border-amber-400 bg-white transition-all text-left group">
+            <button onclick="selectUrineLevel(3)" data-level="3" class="urine-card w-full flex items-center justify-between p-3.5 rounded-2xl border-2 border-slate-200 hover:border-amber-400 bg-white transition-all text-left group touch-manipulation active:scale-98">
               <div class="flex items-center space-x-3">
-                <div class="w-8 h-12 rounded-lg border border-yellow-400 shadow-inner" style="background-color: #facc15;"></div>
+                <div class="w-8 h-12 rounded-lg border border-yellow-400 shadow-inner shrink-0" style="background-color: #facc15;"></div>
                 <div>
                   <div class="flex items-center space-x-1.5">
                     <span class="text-xs font-bold text-slate-900">Level 3: Bright / Lemon Yellow</span>
@@ -698,9 +754,9 @@
             </button>
 
             <!-- Level 4: Dark Yellow / Amber -->
-            <button onclick="selectUrineLevel(4)" data-level="4" class="urine-card w-full flex items-center justify-between p-3 rounded-2xl border-2 border-slate-200 hover:border-orange-400 bg-white transition-all text-left group">
+            <button onclick="selectUrineLevel(4)" data-level="4" class="urine-card w-full flex items-center justify-between p-3.5 rounded-2xl border-2 border-slate-200 hover:border-orange-400 bg-white transition-all text-left group touch-manipulation active:scale-98">
               <div class="flex items-center space-x-3">
-                <div class="w-8 h-12 rounded-lg border border-amber-600 shadow-inner" style="background-color: #d97706;"></div>
+                <div class="w-8 h-12 rounded-lg border border-amber-600 shadow-inner shrink-0" style="background-color: #d97706;"></div>
                 <div>
                   <div class="flex items-center space-x-1.5">
                     <span class="text-xs font-bold text-slate-900">Level 4: Dark Yellow / Amber</span>
@@ -713,9 +769,9 @@
             </button>
 
             <!-- Level 5: Honey / Brownish Amber -->
-            <button onclick="selectUrineLevel(5)" data-level="5" class="urine-card w-full flex items-center justify-between p-3 rounded-2xl border-2 border-slate-200 hover:border-rose-400 bg-white transition-all text-left group">
+            <button onclick="selectUrineLevel(5)" data-level="5" class="urine-card w-full flex items-center justify-between p-3.5 rounded-2xl border-2 border-slate-200 hover:border-rose-400 bg-white transition-all text-left group touch-manipulation active:scale-98">
               <div class="flex items-center space-x-3">
-                <div class="w-8 h-12 rounded-lg border border-amber-900 shadow-inner" style="background-color: #78350f;"></div>
+                <div class="w-8 h-12 rounded-lg border border-amber-900 shadow-inner shrink-0" style="background-color: #78350f;"></div>
                 <div>
                   <div class="flex items-center space-x-1.5">
                     <span class="text-xs font-bold text-slate-900">Level 5: Honey / Brown Amber</span>
@@ -822,7 +878,7 @@
               <span class="absolute right-3 top-2.5 text-xs text-slate-400">ml / day</span>
             </div>
             <p class="text-[10px] text-slate-400 mt-1.5">If specified, this overrides standard targets to ensure cardiovascular safety.</p>
-            <button onclick="saveDoctorLimit()" class="mt-2.5 px-3 py-1.5 bg-slate-800 hover:bg-slate-700 text-white rounded-xl text-xs font-semibold">
+            <button onclick="saveDoctorLimit()" class="mt-2.5 px-4 py-2.5 bg-slate-800 hover:bg-slate-700 text-white rounded-xl text-xs sm:text-sm font-semibold touch-manipulation active:scale-95 min-h-[40px]">
               Save Doctor Override
             </button>
           </div>
@@ -929,10 +985,10 @@
           <h3 class="text-xs font-bold uppercase tracking-wider text-rose-600">Data Management</h3>
           <p class="text-[11px] text-slate-500">Safely clear today's intake or restore factory presets.</p>
           <div class="flex space-x-2 pt-1">
-            <button onclick="openResetModal()" class="flex-1 py-2.5 bg-rose-50 hover:bg-rose-100 text-rose-700 border border-rose-200 rounded-xl text-xs font-bold transition-all active:scale-98">
+            <button onclick="openResetModal()" class="flex-1 py-3 bg-rose-50 hover:bg-rose-100 text-rose-700 border border-rose-200 rounded-xl text-xs sm:text-sm font-bold transition-all active:scale-95 touch-manipulation min-h-[44px]">
               Reset Today's Data
             </button>
-            <button onclick="exportDataJson()" class="px-3 py-2.5 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-xl text-xs font-semibold transition-all" title="Backup your logs to a JSON file">
+            <button onclick="exportDataJson()" class="px-4 py-3 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-xl text-xs sm:text-sm font-semibold transition-all active:scale-95 touch-manipulation min-h-[44px]" title="Backup your logs to a JSON file">
               Export Data
             </button>
           </div>
@@ -942,11 +998,11 @@
 
     </main>
 
-    <!-- Bottom Navigation Bar (Fixed Mobile-First) -->
-    <nav class="fixed bottom-0 z-40 w-full max-w-md bg-white/95 backdrop-blur-md border-t border-slate-200/80 px-2 py-1.5 pb-safe shadow-lg">
+    <!-- Bottom Navigation Bar (Fixed Mobile-First & Centered) -->
+    <nav class="fixed bottom-0 left-1/2 -translate-x-1/2 z-40 w-full max-w-md bg-white/95 backdrop-blur-md border-t border-slate-200/80 px-2 py-1.5 pb-safe shadow-[0_-4px_20px_rgba(0,0,0,0.06)]">
       <div class="grid grid-cols-4 gap-1 text-center">
         <!-- Tab 1: Today -->
-        <button onclick="switchTab('today')" id="nav-btn-today" class="nav-item flex flex-col items-center py-1.5 px-1 rounded-xl text-brand-600 font-bold transition-colors">
+        <button onclick="switchTab('today')" id="nav-btn-today" class="nav-item flex flex-col items-center justify-center min-h-[50px] py-1 px-1 rounded-2xl text-brand-600 bg-brand-50/80 font-bold transition-all duration-150 active:scale-95 touch-manipulation">
           <svg class="w-5 h-5 mb-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 2.69l5.66 5.66a8 8 0 1 1-11.31 0z"/>
           </svg>
@@ -954,16 +1010,16 @@
         </button>
 
         <!-- Tab 2: Reminders -->
-        <button onclick="switchTab('reminders')" id="nav-btn-reminders" class="nav-item flex flex-col items-center py-1.5 px-1 rounded-xl text-slate-400 hover:text-slate-600 font-semibold transition-colors relative">
+        <button onclick="switchTab('reminders')" id="nav-btn-reminders" class="nav-item flex flex-col items-center justify-center min-h-[50px] py-1 px-1 rounded-2xl text-slate-500 font-semibold transition-all duration-150 active:scale-95 touch-manipulation relative">
           <svg class="w-5 h-5 mb-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
           </svg>
           <span class="text-[10px] tracking-tight">Reminders</span>
-          <span id="navRemindersDot" class="absolute top-1 right-5 w-2 h-2 rounded-full bg-brand-500"></span>
+          <span id="navRemindersDot" class="absolute top-1.5 right-4 w-2 h-2 rounded-full bg-brand-500 ring-2 ring-white"></span>
         </button>
 
         <!-- Tab 3: Urine Color -->
-        <button onclick="switchTab('urine')" id="nav-btn-urine" class="nav-item flex flex-col items-center py-1.5 px-1 rounded-xl text-slate-400 hover:text-slate-600 font-semibold transition-colors">
+        <button onclick="switchTab('urine')" id="nav-btn-urine" class="nav-item flex flex-col items-center justify-center min-h-[50px] py-1 px-1 rounded-2xl text-slate-500 font-semibold transition-all duration-150 active:scale-95 touch-manipulation">
           <svg class="w-5 h-5 mb-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z"/>
           </svg>
@@ -971,7 +1027,7 @@
         </button>
 
         <!-- Tab 4: Settings -->
-        <button onclick="switchTab('settings')" id="nav-btn-settings" class="nav-item flex flex-col items-center py-1.5 px-1 rounded-xl text-slate-400 hover:text-slate-600 font-semibold transition-colors">
+        <button onclick="switchTab('settings')" id="nav-btn-settings" class="nav-item flex flex-col items-center justify-center min-h-[50px] py-1 px-1 rounded-2xl text-slate-500 font-semibold transition-all duration-150 active:scale-95 touch-manipulation">
           <svg class="w-5 h-5 mb-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/>
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
@@ -987,8 +1043,8 @@
     <!-- ========================================== -->
 
     <!-- 1. Live Reminder Alert Modal -->
-    <div id="reminderModal" class="fixed inset-0 z-50 hidden bg-slate-900/70 backdrop-blur-sm flex items-center justify-center p-4">
-      <div class="w-full max-w-sm rounded-3xl bg-white p-6 shadow-2xl border border-slate-100 text-center animate-bounce-gentle">
+    <div id="reminderModal" onclick="if(event.target === this) dismissReminderModal()" class="fixed inset-0 z-50 hidden bg-slate-900/70 backdrop-blur-sm flex items-center justify-center p-4">
+      <div class="w-full max-w-sm max-h-[90vh] overflow-y-auto rounded-3xl bg-white p-6 shadow-2xl border border-slate-100 text-center animate-bounce-gentle">
         <div class="mx-auto w-16 h-16 rounded-3xl bg-gradient-to-tr from-brand-600 to-cyan-400 p-3 text-white shadow-lg shadow-brand-500/30 flex items-center justify-center mb-4">
           <svg class="w-10 h-10 animate-pulse" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 2.69l5.66 5.66a8 8 0 1 1-11.31 0z"/>
@@ -1016,15 +1072,15 @@
 
         <!-- 3 Action Buttons -->
         <div class="space-y-2">
-          <button id="modalDrinkNowBtn" class="w-full py-3 bg-brand-600 hover:bg-brand-500 active:scale-95 text-white rounded-2xl font-bold text-sm shadow-md shadow-brand-500/30 transition-all flex items-center justify-center space-x-1.5">
+          <button id="modalDrinkNowBtn" class="w-full py-3 bg-brand-600 hover:bg-brand-500 active:scale-95 text-white rounded-2xl font-bold text-sm shadow-md shadow-brand-500/30 transition-all flex items-center justify-center space-x-1.5 touch-manipulation">
             <span>Drink Now (+<span id="modalDrinkAmountBtnText">350</span> ml)</span>
           </button>
           
           <div class="grid grid-cols-2 gap-2">
-            <button onclick="snoozeReminder(15)" class="py-2.5 bg-slate-100 hover:bg-slate-200 active:scale-95 text-slate-700 rounded-xl font-semibold text-xs transition-all">
+            <button onclick="snoozeReminder(15)" class="py-2.5 bg-slate-100 hover:bg-slate-200 active:scale-95 text-slate-700 rounded-xl font-semibold text-xs transition-all touch-manipulation">
               Snooze 15 min
             </button>
-            <button onclick="dismissReminderModal()" class="py-2.5 bg-slate-100 hover:bg-slate-200 active:scale-95 text-slate-700 rounded-xl font-semibold text-xs transition-all">
+            <button onclick="dismissReminderModal()" class="py-2.5 bg-slate-100 hover:bg-slate-200 active:scale-95 text-slate-700 rounded-xl font-semibold text-xs transition-all touch-manipulation">
               Dismiss
             </button>
           </div>
@@ -1034,8 +1090,8 @@
 
 
     <!-- 2. Soda & High Oxalate Gentle Stone-Risk Tip Modal -->
-    <div id="sodaWarningModal" class="fixed inset-0 z-50 hidden bg-slate-900/60 backdrop-blur-sm flex items-center justify-center p-4">
-      <div class="w-full max-w-sm rounded-3xl bg-white p-6 shadow-2xl border border-slate-100 text-center">
+    <div id="sodaWarningModal" onclick="if(event.target === this) closeSodaModal()" class="fixed inset-0 z-50 hidden bg-slate-900/60 backdrop-blur-sm flex items-center justify-center p-4">
+      <div class="w-full max-w-sm max-h-[90vh] overflow-y-auto rounded-3xl bg-white p-6 shadow-2xl border border-slate-100 text-center">
         <div class="mx-auto w-14 h-14 rounded-2xl bg-rose-100 text-rose-600 flex items-center justify-center text-2xl mb-3">
           🥤
         </div>
@@ -1048,13 +1104,13 @@
         </p>
 
         <div class="mt-4 space-y-2">
-          <button onclick="logBeverage('Soda / Tea with Water Chaser', 350, 'soda_water'); closeSodaModal();" class="w-full py-2.5 bg-brand-600 hover:bg-brand-500 text-white rounded-xl text-xs font-bold transition-all shadow-sm">
+          <button onclick="logBeverage('Soda / Tea with Water Chaser', 350, 'soda_water'); closeSodaModal();" class="w-full py-2.5 bg-brand-600 hover:bg-brand-500 text-white rounded-xl text-xs font-bold transition-all shadow-sm touch-manipulation active:scale-95">
             Log Beverage + Water Chaser (+350 ml)
           </button>
-          <button onclick="logBeverage('Soda / Strong Tea', 200, 'soda'); closeSodaModal();" class="w-full py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-xl text-xs font-semibold transition-all">
+          <button onclick="logBeverage('Soda / Strong Tea', 200, 'soda'); closeSodaModal();" class="w-full py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-xl text-xs font-semibold transition-all touch-manipulation active:scale-95">
             Log Just Beverage (+200 ml)
           </button>
-          <button onclick="closeSodaModal()" class="w-full py-1.5 text-xs text-slate-400 hover:text-slate-600">
+          <button onclick="closeSodaModal()" class="w-full py-1.5 text-xs text-slate-400 hover:text-slate-600 touch-manipulation">
             Cancel
           </button>
         </div>
@@ -1063,11 +1119,11 @@
 
 
     <!-- 3. Custom Volume Log Modal -->
-    <div id="customDrinkModal" class="fixed inset-0 z-50 hidden bg-slate-900/60 backdrop-blur-sm flex items-center justify-center p-4">
-      <div class="w-full max-w-sm rounded-3xl bg-white p-6 shadow-2xl border border-slate-100">
+    <div id="customDrinkModal" onclick="if(event.target === this) closeCustomDrinkModal()" class="fixed inset-0 z-50 hidden bg-slate-900/60 backdrop-blur-sm flex items-center justify-center p-4">
+      <div class="w-full max-w-sm max-h-[90vh] overflow-y-auto rounded-3xl bg-white p-6 shadow-2xl border border-slate-100">
         <div class="flex items-center justify-between mb-3">
           <h3 class="text-sm font-bold text-slate-900">Log Custom Beverage</h3>
-          <button onclick="closeCustomDrinkModal()" class="text-slate-400 hover:text-slate-600 text-lg">✕</button>
+          <button onclick="closeCustomDrinkModal()" class="min-w-[36px] min-h-[36px] flex items-center justify-center text-slate-400 hover:text-slate-600 text-lg rounded-lg touch-manipulation">✕</button>
         </div>
 
         <form id="customDrinkForm" onsubmit="handleCustomDrinkSubmit(event)" class="space-y-3">
@@ -1086,7 +1142,7 @@
             <input type="checkbox" id="customDrinkIsCitrate" class="rounded text-brand-600 border-slate-300">
             <label for="customDrinkIsCitrate" class="text-xs text-slate-700 font-medium">Contains Lemon / Citrate Boost 🍋</label>
           </div>
-          <button type="submit" class="w-full mt-2 py-2.5 bg-brand-600 hover:bg-brand-500 text-white rounded-xl text-xs font-bold transition-all shadow-sm">
+          <button type="submit" class="w-full mt-2 py-2.5 bg-brand-600 hover:bg-brand-500 text-white rounded-xl text-xs font-bold transition-all shadow-sm touch-manipulation active:scale-95">
             Add to Log
           </button>
         </form>
@@ -1095,8 +1151,8 @@
 
 
     <!-- 4. Reset Today's Data Modal -->
-    <div id="resetModal" class="fixed inset-0 z-50 hidden bg-slate-900/60 backdrop-blur-sm flex items-center justify-center p-4">
-      <div class="w-full max-w-sm rounded-3xl bg-white p-6 shadow-2xl border border-slate-100 text-center">
+    <div id="resetModal" onclick="if(event.target === this) closeResetModal()" class="fixed inset-0 z-50 hidden bg-slate-900/60 backdrop-blur-sm flex items-center justify-center p-4">
+      <div class="w-full max-w-sm max-h-[90vh] overflow-y-auto rounded-3xl bg-white p-6 shadow-2xl border border-slate-100 text-center">
         <div class="mx-auto w-12 h-12 rounded-2xl bg-rose-100 text-rose-600 flex items-center justify-center text-xl mb-3">
           ⚠️
         </div>
@@ -1106,10 +1162,10 @@
         </p>
 
         <div class="mt-4 grid grid-cols-2 gap-2">
-          <button onclick="confirmResetToday()" class="py-2.5 bg-rose-600 hover:bg-rose-500 text-white rounded-xl text-xs font-bold transition-all">
+          <button onclick="confirmResetToday()" class="py-2.5 bg-rose-600 hover:bg-rose-500 text-white rounded-xl text-xs font-bold transition-all touch-manipulation active:scale-95">
             Yes, Reset
           </button>
-          <button onclick="closeResetModal()" class="py-2.5 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-xl text-xs font-semibold transition-all">
+          <button onclick="closeResetModal()" class="py-2.5 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-xl text-xs font-semibold transition-all touch-manipulation active:scale-95">
             Cancel
           </button>
         </div>
@@ -1118,14 +1174,14 @@
 
 
     <!-- 5. Browser Push Notification Troubleshooting Modal -->
-    <div id="pushHelpModal" class="fixed inset-0 z-50 hidden bg-slate-900/60 backdrop-blur-sm flex items-center justify-center p-4">
+    <div id="pushHelpModal" onclick="if(event.target === this) closePushHelpModal()" class="fixed inset-0 z-50 hidden bg-slate-900/60 backdrop-blur-sm flex items-center justify-center p-4">
       <div class="w-full max-w-sm rounded-3xl bg-white p-5 shadow-2xl border border-slate-100 max-h-[90vh] overflow-y-auto">
         <div class="flex items-center justify-between pb-3 border-b border-slate-100">
           <div class="flex items-center space-x-2">
             <span class="text-xl">📲</span>
             <h3 class="text-sm font-bold text-slate-900">Push Notification Fix Guide</h3>
           </div>
-          <button onclick="closePushHelpModal()" class="text-slate-400 hover:text-slate-600 text-lg">✕</button>
+          <button onclick="closePushHelpModal()" class="min-w-[36px] min-h-[36px] flex items-center justify-center text-slate-400 hover:text-slate-600 text-lg rounded-lg touch-manipulation">✕</button>
         </div>
 
         <div class="space-y-3.5 pt-3 text-xs text-slate-700">
@@ -1667,7 +1723,7 @@
             </div>
             <div class="flex items-center space-x-2">
               <span class="text-xs font-mono font-bold px-2 py-0.5 rounded-lg border ${badgeColor}">+${item.amount} ml</span>
-              <button onclick="deleteDrinkEntry('${item.id}')" class="p-1 text-slate-400 hover:text-rose-600 rounded-lg transition-colors" title="Delete entry">
+              <button onclick="deleteDrinkEntry('${item.id}')" class="min-w-[38px] min-h-[38px] flex items-center justify-center p-2 text-slate-400 hover:text-rose-600 active:bg-rose-50 rounded-xl transition-all touch-manipulation" title="Delete entry" aria-label="Delete entry">
                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/>
                 </svg>
@@ -1696,7 +1752,7 @@
       }
 
       container.innerHTML = reminders.map(r => `
-        <div class="flex items-center justify-between p-3.5 rounded-2xl bg-white border border-slate-200/80 shadow-xs ${!r.active ? 'opacity-50' : ''}">
+        <div class="flex items-center justify-between p-3 sm:p-3.5 rounded-2xl bg-white border border-slate-200/80 shadow-xs ${!r.active ? 'opacity-50' : ''}">
           <div class="flex items-center space-x-3">
             <div class="text-center font-mono w-14">
               <span class="text-sm font-black text-slate-900">${r.time}</span>
@@ -1706,13 +1762,13 @@
               <div class="text-[11px] font-semibold text-brand-600">${r.amount} ml recommended</div>
             </div>
           </div>
-          <div class="flex items-center space-x-2">
+          <div class="flex items-center space-x-1.5 sm:space-x-2">
             <!-- Toggle Individual Reminder -->
-            <button onclick="toggleReminderItem('${r.id}')" class="p-1.5 rounded-lg border text-xs font-semibold ${r.active ? 'bg-brand-50 text-brand-700 border-brand-200' : 'bg-slate-100 text-slate-400 border-slate-200'}" title="${r.active ? 'Pause reminder' : 'Enable reminder'}">
+            <button onclick="toggleReminderItem('${r.id}')" class="min-h-[38px] px-3 py-1.5 rounded-xl border text-xs font-bold transition-all touch-manipulation active:scale-95 ${r.active ? 'bg-brand-50 text-brand-700 border-brand-200 shadow-xs' : 'bg-slate-100 text-slate-400 border-slate-200'}" title="${r.active ? 'Pause reminder' : 'Enable reminder'}">
               ${r.active ? 'Active' : 'Off'}
             </button>
             <!-- Delete Button -->
-            <button onclick="deleteReminderItem('${r.id}')" class="p-1.5 text-slate-400 hover:text-rose-600 rounded-lg transition-colors" title="Delete">
+            <button onclick="deleteReminderItem('${r.id}')" class="min-w-[38px] min-h-[38px] flex items-center justify-center p-2 text-slate-400 hover:text-rose-600 active:bg-rose-50 rounded-xl transition-all touch-manipulation" title="Delete" aria-label="Delete reminder">
               <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
               </svg>
@@ -1748,7 +1804,7 @@
               <div class="text-[10px] text-slate-400 font-mono">${c.timestamp}</div>
             </div>
           </div>
-          <button onclick="deleteUrineCheck('${c.id}')" class="p-1 text-slate-400 hover:text-rose-600 rounded transition-colors">
+          <button onclick="deleteUrineCheck('${c.id}')" class="min-w-[38px] min-h-[38px] flex items-center justify-center p-2 text-slate-400 hover:text-rose-600 active:bg-rose-50 rounded-xl transition-all touch-manipulation" title="Delete check" aria-label="Delete check">
             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/>
             </svg>
@@ -2064,11 +2120,11 @@
     function updateSoundPickerUI() {
       const current = appState.alertSound || 'bell';
       document.querySelectorAll('.sound-option-btn').forEach(btn => {
-        btn.className = 'sound-option-btn py-2 px-1 text-center rounded-xl border text-xs font-semibold transition-all border-slate-200 bg-slate-50 text-slate-600 hover:bg-slate-100';
+        btn.className = 'sound-option-btn py-2.5 px-1 min-h-[44px] text-center rounded-xl border text-xs font-semibold transition-all border-slate-200 bg-slate-50 text-slate-600 hover:bg-slate-100 touch-manipulation active:scale-95 flex items-center justify-center';
       });
       const activeBtn = document.getElementById(`soundOption-${current}`);
       if (activeBtn) {
-        activeBtn.className = 'sound-option-btn py-2 px-1 text-center rounded-xl border text-xs font-bold transition-all border-brand-500 bg-brand-50 text-brand-700 shadow-xs ring-1 ring-brand-400';
+        activeBtn.className = 'sound-option-btn py-2.5 px-1 min-h-[44px] text-center rounded-xl border text-xs font-bold transition-all border-brand-500 bg-brand-50 text-brand-700 shadow-xs ring-1 ring-brand-400 touch-manipulation active:scale-95 flex items-center justify-center';
       }
       const labelEl = document.getElementById('soundPickerActiveLabel');
       if (labelEl) labelEl.textContent = getSoundLabel(current);
@@ -2643,7 +2699,7 @@
       if (data.catchUpMl > 0) {
         catchUpButtonHtml = `
           <div class="pt-2">
-            <button onclick="catchUpWater(${data.catchUpMl})" class="w-full py-2.5 bg-brand-600 hover:bg-brand-500 text-white rounded-xl text-xs font-bold transition-all shadow-sm flex items-center justify-center space-x-1.5 active:scale-95">
+            <button onclick="catchUpWater(${data.catchUpMl})" class="w-full min-h-[48px] py-3 bg-brand-600 hover:bg-brand-500 text-white rounded-2xl text-xs sm:text-sm font-bold transition-all shadow-md shadow-brand-500/20 flex items-center justify-center space-x-1.5 active:scale-95 touch-manipulation">
               <span>💧 Drink 1-Tap Catch-up Water (+${data.catchUpMl} ml)</span>
             </button>
           </div>
@@ -2769,14 +2825,14 @@
 
       // Update Nav Buttons
       document.querySelectorAll('.nav-item').forEach(btn => {
-        btn.classList.remove('text-brand-600', 'font-bold');
-        btn.classList.add('text-slate-400', 'font-semibold');
+        btn.classList.remove('text-brand-600', 'font-bold', 'bg-brand-50/80');
+        btn.classList.add('text-slate-500', 'font-semibold');
       });
 
       const activeBtn = document.getElementById(`nav-btn-${tabId}`);
       if (activeBtn) {
-        activeBtn.classList.add('text-brand-600', 'font-bold');
-        activeBtn.classList.remove('text-slate-400', 'font-semibold');
+        activeBtn.classList.add('text-brand-600', 'font-bold', 'bg-brand-50/80');
+        activeBtn.classList.remove('text-slate-500', 'font-semibold');
       }
 
       window.scrollTo({ top: 0, behavior: 'smooth' });
